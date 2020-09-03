@@ -7,7 +7,7 @@ const { mod, intsToCharList } = require("./helper");
 /*
  * Returns the result the Vigenère encryption on the given text with the given key.
  */
-const encrypt = (plaintext, key) => {
+exports.encryptVigenere = (plaintext, key) => {
   const output = [];
   let j = 0;
 
@@ -26,7 +26,7 @@ const encrypt = (plaintext, key) => {
   return output;
 };
 
-const decrypt = (cipher, key) => {
+exports.decryptVigenere = (cipher, key) => {
   const output = [];
   let j = 0;
 
@@ -56,8 +56,8 @@ const isLowercase = (c) => {
   return 97 <= c && c <= 122; // 97 is character code for 'a'. 122 is 'z'.
 };
 
-const text = intsToCharList(encrypt("indonesia tanah air beta", "mobil"));
-console.log(text.join(""));
+// const text = intsToCharList(encrypt("indonesia tanah air beta", "mobil"));
+// console.log(text.join(""));
 
-const text2 = intsToCharList(decrypt("NUXPRJZCBXFUUIENYVFXF", "mobil"));
-console.log(text2.join(""));
+// const text2 = intsToCharList(decrypt("NUXPRJZCBXFUUIENYVFXF", "mobil"));
+// console.log(text2.join(""));
