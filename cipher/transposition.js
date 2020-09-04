@@ -13,13 +13,9 @@ exports.encryptTranspose = (plaintext) => {
     matrix.push(temp);
   }
 
-  let index = 0;
   for (let i = 0; i < K; i++) {
     for (let j = 0; j < div(plaintext.length, K) + 1; j++) {
-      if (matrix[j][i] != null) {
-        output[index] = matrix[j][i];
-        index++;
-      }
+      if (matrix[j][i] != null) output.push(matrix[j][i]);
     }
   }
   return output;
@@ -43,13 +39,9 @@ exports.decryptTranspose = (chiper) => {
     matrix.push(temp);
   }
 
-  index = 0;
   for (let i = 0; i < div(chiper.length, K) + 1; i++) {
     for (let j = 0; j < K; j++) {
-      if (matrix[j][i] != null) {
-        output[index] = matrix[j][i];
-        index++;
-      }
+      if (matrix[j][i] != null) output.push(matrix[j][i]);
     }
   }
   return output;
