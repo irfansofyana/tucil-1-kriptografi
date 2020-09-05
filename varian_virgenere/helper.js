@@ -14,7 +14,7 @@ const shuffleString = (string) => {
 }
 
 const randomKey = (plaintext) => {
-    const randomKeyLen = Math.floor(Math.random() * plaintext.length()) + 1;
+    const randomKeyLen = Math.floor(Math.random() * plaintext.length) + 1;
     let key = '';
     for (let i = 0; i< randomKeyLen; ++i) {
         const randomChar = String.fromCharCode('a'.charCodeAt() + Math.floor(Math.random() * 26));
@@ -41,29 +41,19 @@ const generateMatrix = () => {
 
 const findEncryptedChar = (matrix, char, key) => {
     let plainTextPosition = -1;
-    for (let i = 0; i < 26 && plainTextPost === -1; ++i) {
-        if (matrix[0][i] === char) {
+    for (let i = 0; i < 26 && plainTextPosition === -1; ++i) {
+        if (matrix[0][i].toLowerCase() === char) {
             plainTextPosition = i;
         }
     }
 
-    let keyPositiion = -1;
-    for (let i = 0; i < 26 && keyPositiion === -1; ++i) {
-        if (matrix[i][0] === key) {
-            keyPositiion = i;
-        }
-    }
+    let keyPosition = key.charCodeAt() - 'a'.charCodeAt();
 
-    return matrix[keyPositiion][plainTextPosition];
+    return matrix[keyPosition][plainTextPosition];
 }
 
 const findDecryptedChar = (matrix, char, key) => {
-    let keyPosition = -1;
-    for (let i = 0; i < 26 && keyPosition === -1; ++i) {
-        if (matrix[i][0] === key) {
-            keyPosition = i;
-        }
-    }
+    let keyPosition = key.charCodeAt() - 'a'.charCodeAt();
 
     let cipherposition = -1;
     for (let i = 0; i < 26 && cipherposition === -1; ++i) {
@@ -72,7 +62,7 @@ const findDecryptedChar = (matrix, char, key) => {
         }
     }
 
-    return matrix[0][cipherposition];
+    return matrix[0][cipherposition].toLowerCase();
 }
 
 module.exports = {
