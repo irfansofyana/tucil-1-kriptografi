@@ -4,11 +4,12 @@ const helper = require('../varian_virgenere/helper');
 const plainTexts = [
     'irfansofyanaputra',
     'juniardiakbar',
-    'iniTuCiLKripTografi',
-    'iniTuCilRasaTubes',
-    'Kriptografi2020',
-    'PakRINALDIMUNIR',
-    'Ini tucil seperti Tubes Ya?'
+    'initucilgais',
+    'initucilrasatubes',
+    'kriptografi',
+    'pakrinaldimunir',
+    'algoritmanyabanyaksekali',
+    'tugasnyahanyasatuminggu'
 ];
 
 test('The encryption and decription should be success', () => {
