@@ -59,9 +59,38 @@ const findDecryptedChar = (matrix, char, key) => {
     return String.fromCharCode('a'.charCodeAt() + cipherposition);
 }
 
+const findAlphabetOrder = (char) => {
+    if (char === char.toLowerCase()) {
+        return char.charCodeAt() - 'a'.charCodeAt();
+    } else {
+        return char.charCodeAt() - 'A'.charCodeAt();
+    }
+}
+
+const findAlphabetUppercase = (order) => {
+    return String.fromCharCode('A'.charCodeAt() + order);
+}
+
+const findAlphabetLowerCase = (order) => {
+    return String.fromCharCode('a'.charCodeAt() + order);
+}
+
+const completeAutoKey = (key, plaintext) => {
+    let newKey = key;
+    for (let i = 0; i < plaintext.length - key.length; ++i) {
+        newKey = newKey + plaintext[i];
+    }
+
+    return newKey;
+}
+
 module.exports = {
     randomKey,
     generateMatrix,
     findEncryptedChar,
-    findDecryptedChar
+    findDecryptedChar,
+    findAlphabetOrder,
+    findAlphabetUppercase,
+    findAlphabetLowerCase,
+    completeAutoKey
 }

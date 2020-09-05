@@ -1,4 +1,5 @@
-const full_virgenere = require('../varian_vigenere/full_vigenere');
+const full_vigenere = require('../varian_vigenere/full_vigenere');
+const auto_key_vigenere = require('../varian_vigenere/auto_key_vigenere');
 const helper = require('../varian_vigenere/helper');
 
 const plainTexts = [
@@ -12,12 +13,22 @@ const plainTexts = [
     'tugasnyahanyasatuminggu'
 ];
 
-test('The encryption and decription should be success', () => {
+test('The encryption and decription using full vigenere should be successful', () => {
     const matrix = helper.generateMatrix();
     plainTexts.forEach((plainText) => {
         const randomKey = helper.randomKey(plainText);
-        const encrypt = full_virgenere.encrypt(plainText, randomKey, matrix);
-        const decrypt = full_virgenere.decrypt(encrypt, randomKey, matrix);
+        const encrypt = full_vigenere.encrypt(plainText, randomKey, matrix);
+        const decrypt = full_vigenere.decrypt(encrypt, randomKey, matrix);
+
+        expect(decrypt).toBe(plainText);
+    });
+});
+
+test('The encryption and decription using auto key vigenere should be successful', () => {
+    plainTexts.forEach((plainText) => {
+        const randomKey = helper.completeAutoKey(helper.randomKey(plainText), plainText);
+        const encrypt = auto_key_vigenere.encrypt(plainText, randomKey);
+        const decrypt = auto_key_vigenere.decrypt(encrypt, randomKey);
 
         expect(decrypt).toBe(plainText);
     });
