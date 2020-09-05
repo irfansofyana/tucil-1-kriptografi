@@ -40,13 +40,7 @@ const generateMatrix = () => {
 }
 
 const findEncryptedChar = (matrix, char, key) => {
-    let plainTextPosition = -1;
-    for (let i = 0; i < 26 && plainTextPosition === -1; ++i) {
-        if (matrix[0][i].toLowerCase() === char) {
-            plainTextPosition = i;
-        }
-    }
-
+    let plainTextPosition = char.charCodeAt() - 'a'.charCodeAt();
     let keyPosition = key.charCodeAt() - 'a'.charCodeAt();
 
     return matrix[keyPosition][plainTextPosition];
@@ -62,7 +56,7 @@ const findDecryptedChar = (matrix, char, key) => {
         }
     }
 
-    return matrix[0][cipherposition].toLowerCase();
+    return String.fromCharCode('a'.charCodeAt() + cipherposition);
 }
 
 module.exports = {

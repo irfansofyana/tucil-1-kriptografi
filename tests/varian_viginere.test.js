@@ -1,5 +1,5 @@
-const full_virgenere = require('../varian_virgenere/full_vigenere');
-const helper = require('../varian_virgenere/helper');
+const full_virgenere = require('../varian_vigenere/full_vigenere');
+const helper = require('../varian_vigenere/helper');
 
 const plainTexts = [
     'irfansofyanaputra',
