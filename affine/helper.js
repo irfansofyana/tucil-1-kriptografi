@@ -41,29 +41,21 @@ const inverse = (a, mod) => {
 
 
 const wordToNum = (word) => {
-    let num = '';
-    for (let i = 0; i < word.length; ++i) {
-        let order = word[i].toLowerCase().charCodeAt(0) - 'a'.charCodeAt();
-        if (word[i] === word[i].toUpperCase()) {
-            order += 26;
-        }
-        num = num + (order < 10 ? '0'.concat(order.toString()) : order.toString());
+    let order = word.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0);
+    if (word === word.toUpperCase()) {
+        order += 26;
     }
+    num = (order < 10 ? '0'.concat(order.toString()) : order.toString());
     return num;
 }
 
 const numToWord = (num) => {
-    let word = '';
-    for (let i = 0; i < num.length; i += 2) {
-        let order = parseInt(num.substr(i, 2), 10);
-        if (order > 25) {
-            word = word + String.fromCharCode('A'.charCodeAt() + order - 26);
-        } else {
-            word = word + String.fromCharCode('a'.charCodeAt() + order);
-        }
+    let order = parseInt(num, 10);
+    if (order > 25) {
+        return String.fromCharCode('A'.charCodeAt() + order - 26);
+    } else {
+        return String.fromCharCode('a'.charCodeAt() + order);
     }
-
-    return word;
 }
 
 module.exports = {
