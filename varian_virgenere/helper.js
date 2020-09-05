@@ -13,6 +13,17 @@ const shuffleString = (string) => {
     return array;
 }
 
+const randomKey = (plaintext) => {
+    const randomKeyLen = Math.floor(Math.random() * plaintext.length()) + 1;
+    let key = '';
+    for (let i = 0; i< randomKeyLen; ++i) {
+        const randomChar = String.fromCharCode('a'.charCodeAt() + Math.floor(Math.random() * 26));
+        key = key + randomChar;
+    }
+
+    return key;
+}
+
 const generateMatrix = () => {
     let alphabet = ''
     for (let i = 0; i < 26; ++i) {
@@ -65,6 +76,7 @@ const findDecryptedChar = (matrix, char, key) => {
 }
 
 module.exports = {
+    randomKey,
     generateMatrix,
     findEncryptedChar,
     findDecryptedChar
