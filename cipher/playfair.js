@@ -67,7 +67,7 @@ const findElementOnMatrix = (element, matrix) => {
   }
 };
 
-const processPlayfair = (matrix, bigram) => {
+const processEncryptPlayfair = (matrix, bigram) => {
   const locationA = findElementOnMatrix(bigram[0], matrix);
   const locationB = findElementOnMatrix(bigram[1], matrix);
 
@@ -89,13 +89,35 @@ const processPlayfair = (matrix, bigram) => {
   }
 };
 
+const processDecryptPlayfair = (matrix, bigram) => {
+  const locationA = findElementOnMatrix(bigram[0], matrix);
+  const locationB = findElementOnMatrix(bigram[1], matrix);
+
+  if (locationA[0] == locationB[0]) {
+    return [
+      matrix[locationA[0]][(locationA[1] - 1) % 5],
+      matrix[locationA[0]][(locationB[1] - 1) % 5],
+    ];
+  } else if (locationA[1] == locationB[1]) {
+    return [
+      matrix[(locationA[0] - 1) % 5][locationA[1]],
+      matrix[(locationB[0] - 1) % 5][locationA[1]],
+    ];
+  } else {
+    return [
+      matrix[locationA[0]][locationB[1]],
+      matrix[locationB[0]][locationA[1]],
+    ];
+  }
+};
+
 exports.encryptPlayfair = (plaintext, key) => {
   const bigramArray = generateBigram(plaintext);
   const keyMatrix = generateKeyMatrix(key);
   const output = [];
 
   for (let i = 0; i < bigramArray.length; i++) {
-    const bigram = processPlayfair(keyMatrix, bigramArray[i]);
+    const bigram = processEncryptPlayfair(keyMatrix, bigramArray[i]);
     output.push(bigram[0]);
     output.push(bigram[1]);
   }
@@ -103,11 +125,28 @@ exports.encryptPlayfair = (plaintext, key) => {
   return output;
 };
 
-console.log(
-  intListToText(
-    this.encryptPlayfair(
-      textToIntList("temuiibunantimalam"),
-      textToIntList("jalanganeshasepuluh")
-    )
-  )
+exports.decryptPlayfair = (cipher, key) => {
+  const bigramArray = generateBigram(cipher);
+  const keyMatrix = generateKeyMatrix(key);
+  const output = [];
+
+  for (let i = 0; i < bigramArray.length; i++) {
+    const bigram = processDecryptPlayfair(keyMatrix, bigramArray[i]);
+    output.push(bigram[0]);
+    output.push(bigram[1]);
+  }
+
+  return output;
+};
+
+const cipher = this.encryptPlayfair(
+  textToIntList("temuiibunantimalam"),
+  textToIntList("jalanganeshasepuluh")
 );
+const plaintext = this.decryptPlayfair(
+  cipher,
+  textToIntList("jalanganeshasepuluh")
+);
+
+console.log(intListToText(cipher));
+console.log(intListToText(plaintext));
