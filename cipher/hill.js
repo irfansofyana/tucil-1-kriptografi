@@ -1,4 +1,5 @@
-const { mod, div } = require("./helper");
+const { matrix, multiply } = require("mathjs");
+const { mod, div, inverseMatrix } = require("./helper");
 const N = 3;
 const BLANKCHAR = 26;
 
@@ -9,7 +10,7 @@ const generateKeyMatrix = (key) => {
   for (let i = 0; i < 3; i++) {
     const temp = [];
     for (let j = 0; j < 3; j++) {
-      temp.push(mod(key[k], 65));
+      temp.push(key[k] - 97);
       k++;
     }
     keyMatrix.push(temp);
@@ -18,28 +19,61 @@ const generateKeyMatrix = (key) => {
   return keyMatrix;
 };
 
-const generatePlainTextMatrix = (plaintext) => {
-  let matrixPlaintext = [];
+const generateCipherMatrix = (cipher) => {
+  let matrixCipher = [];
   let k = 0;
-  for (let i = 0; i < div(plaintext.length, N) + 1; i++) {
+
+  for (let i = 0; i < div(cipher.length, N); i++) {
     const temp = [];
     for (let j = 0; j < 3; j++) {
-      plaintext[k] != null ? temp.push(plaintext) : temp.push(BLANKCHAR);
+      temp.push(cipher[k] - 65);
+      k++;
+    }
+    matrixCipher.push(temp);
+  }
+  return matrixCipher;
+};
+
+const generatePlaintextMatrix = (plaintext) => {
+  let matrixPlaintext = [];
+  let k = 0;
+  let numRow = div(plaintext.length, N);
+  if (mod(plaintext.length, N) != 0) numRow++;
+
+  for (let i = 0; i < numRow; i++) {
+    const temp = [];
+    for (let j = 0; j < 3; j++) {
+      plaintext[k] != null
+        ? temp.push(plaintext[k] - 97)
+        : temp.push(BLANKCHAR);
       k++;
     }
     matrixPlaintext.push(temp);
   }
+  return matrixPlaintext;
 };
 
 const multiplicationMatrix = (matrixA, matrixB) => {
-  return math.multiply(matrixA, matrixB);
+  const output = multiply(matrix(matrixA), matrix(matrixB));
+  return output["_data"];
 };
 
-const matrixToList = (matrix) => {
+const matrixToCipherList = (matrix) => {
   let output = [];
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
-      output.push(matrix[i][j]);
+      output.push(mod(matrix[i][j], 26) + 65);
+    }
+  }
+
+  return output;
+};
+
+const matrixToPlaintextList = (matrix) => {
+  let output = [];
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      output.push(mod(matrix[i][j], 26) + 97);
     }
   }
 
@@ -47,9 +81,19 @@ const matrixToList = (matrix) => {
 };
 
 exports.encryptHill = (plaintext, key) => {
-  const matrixPlaintext = generatePlainTextMatrix(plaintext);
+  const matrixPlaintext = generatePlaintextMatrix(plaintext);
   const matrixKey = generateKeyMatrix(key);
   const matrixCipher = multiplicationMatrix(matrixPlaintext, matrixKey);
 
-  return matrixToList(matrixCipher);
+  console.log(matrixToCipherList(matrixCipher));
+  return matrixToCipherList(matrixCipher);
+};
+
+exports.decryptHill = (cipher, key) => {
+  const matrixCipher = generateCipherMatrix(cipher);
+  const matrixKey = inverseMatrix(generateKeyMatrix(key));
+  const matrixPlainText = multiplicationMatrix(matrixCipher, matrixKey);
+
+  console.log(matrixToPlaintextList(matrixPlainText));
+  return matrixToPlaintextList(matrixPlainText);
 };

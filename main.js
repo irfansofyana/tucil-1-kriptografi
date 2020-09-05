@@ -1,6 +1,6 @@
 const { encryptVigenere, decryptVigenere } = require("./cipher/vigenere");
 const { encryptSuper, decryptSuper } = require("./cipher/super");
-const { encryptHill } = require("./cipher/hill");
+const { encryptHill, decryptHill } = require("./cipher/hill");
 const { textToIntList, intListToText } = require("./cipher/helper");
 
 const plaintext = "indonesia adalah negara maritim";
@@ -21,5 +21,10 @@ const plaintextSuper = decryptSuper(cipherSuper, textToIntList(key));
 console.log(intListToText(cipherSuper));
 console.log(intListToText(plaintextSuper));
 
-const cipherHill = encryptHill(textToIntList("hello"), textToIntList("cddf"));
+const cipherHill = encryptHill(
+  textToIntList("indonesia adalah negara maritim"),
+  textToIntList("gybnqkurp")
+);
 console.log(intListToText(cipherHill));
+const plaintextHill = decryptHill(cipherHill, textToIntList("gybnqkurp"));
+console.log(intListToText(plaintextHill));
