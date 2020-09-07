@@ -2,8 +2,6 @@ const helper = require('./helper');
 
 class Rotors {
     constructor(key) {
-        const keyConverted = key.split(' ');
-        
         this._counter = [0, 0, 0];
 
         this._rotor = new Array(3);
@@ -13,7 +11,7 @@ class Rotors {
                 this._rotor[i][j] = new Array(26);
                 if (j === 0) {
                     //left part of a rotor
-                    let curr = parseInt(keyConverted[i], 10);
+                    let curr = parseInt(key[i].charCodeAt()-'a'.charCodeAt(), 10);
                     for (let k = 0; k < 26; ++k) {
                         if (curr == 27) curr = 1;
                         this._rotor[i][j][k] = curr;
@@ -37,12 +35,14 @@ class Rotors {
 
 
     set rotor(key, config) {
-        const keyConverted = key.split(' ');
-        const configConverted = config.split(' ');
-
         for (let i = 0; i < 3; ++i) {
             for (let j = 0; j < 2; ++j) {
-                let curr = (j === 0 ? parseInt(keyConverted[i], 10) : parseInt(configConverted[i]))
+                let curr = (
+                    j === 0 ? 
+                        parseInt(key[i].charCodeAt() - 'a'.charCodeAt(), 10) : 
+                        parseInt(config[i].charCodeAt() - 'a'.charCodeAt(), 10)
+                );
+
                 for (let k = 0; k < 26; ++k) {
                     if (curr == 27) curr = 1;
                     this._rotor[i][j][k] = curr;
@@ -72,6 +72,8 @@ class Rotors {
     }
 
     findEncryptedChar(char) {
+        if (char < 'a' || char > 'z') return char;
+ 
         let leftPointer = this._rotor[0][0][char.charCodeAt() - 'a'.charCodeAt()];
         let rightPointer = 0;
 
@@ -84,6 +86,8 @@ class Rotors {
     }
 
     findDecryptedChar(char) {
+        if (char < 'a' || char > 'z') return char;
+        
         let rightPointer = this._rotor[2][1][char.charCodeAt() - 'a'.charCodeAt()];
         let leftPointer = 0;
 
