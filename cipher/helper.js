@@ -62,40 +62,8 @@ exports.gcd = (a, b) => {
 };
 
 exports.modularInverse = (m, n) => {
-  m = m % n;
-
-  let x = m;
-  let y = n;
-
-  let divs = [];
-  let adds = [];
-
-  let result;
-
-  if (y > x) {
-    let i = 1;
-    while (x != 0) {
-      divs[i] = Math.floor(y / x);
-      let temp = x;
-      x = y % x;
-      y = temp;
-      i++;
-    }
-
-    let len = divs.length;
-    adds[len - 1] = 0;
-    adds[len - 2] = 1;
-    for (let index = len - 2; index > 0; index--) {
-      adds[index - 1] = divs[index] * adds[index] + adds[index + 1];
-    }
-
-    if (adds[0] * m > adds[1] * n) {
-      result = adds[0];
-    } else {
-      result = n - adds[0];
-    }
-  }
-  return result;
+  m = this.mod(m, n);
+  for (let x = 1; x < n; x++) if ((m * x) % n == 1) return x;
 };
 
 exports.inverseMatrix = (matrix) => {

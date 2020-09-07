@@ -71,7 +71,7 @@ const matrixToCipherList = (matrix) => {
 
 const matrixToPlaintextList = (matrix, key) => {
   let output = [];
-  const modInverseDet = modularInverse(mod(Math.round(det(key)), 26), 26);
+  const modInverseDet = modularInverse(Math.round(det(key)), 26);
 
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
