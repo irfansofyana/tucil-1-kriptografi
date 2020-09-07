@@ -35,6 +35,23 @@ class Rotors {
         return this._rotor;
     }
 
+
+    set rotor(key, config) {
+        const keyConverted = key.split(' ');
+        const configConverted = config.split(' ');
+
+        for (let i = 0; i < 3; ++i) {
+            for (let j = 0; j < 2; ++j) {
+                let curr = (j === 0 ? parseInt(keyConverted[i], 10) : parseInt(configConverted[i]))
+                for (let k = 0; k < 26; ++k) {
+                    if (curr == 27) curr = 1;
+                    this._rotor[i][j][k] = curr;
+                    curr++;
+                }
+            }
+        }      
+    }
+
     forwardRotor(indexRotor) {
         for (let i = 0; i < 2; ++i) {
             let tmp = this._rotor[indexRotor][i];
@@ -79,8 +96,10 @@ class Rotors {
     }
 }
 
-const encrypt = (plaintext, key) => {
+const encrypt = (plaintext, key, config) => {
     let rotors = new Rotors(key);
+    if (config.length > 0) rotors.rotor(config);
+
     let resultEncryption = '';
 
     for (let i = 0; i < plaintext.length; ++i) {
@@ -91,8 +110,18 @@ const encrypt = (plaintext, key) => {
     return resultEncryption;
 }
 
-const decrypt = (cipher, key) => {
-    // To Do
+const decrypt = (cipher, key, config) => {
+    let rotors = new Rotors(key);
+    if (config.length > 0) rotors.rotor(config);
+
+    let resultDecryption = '';
+    
+    for (let i = 0; i < cipher.length; ++i) {
+        resultDecryption = resultDecryption + rotors.findDecryptedChar(plaintext[i]);
+        rotors.slideRotors();
+    }
+
+    return resultDecryption;
 }
 
 module.exports = {
