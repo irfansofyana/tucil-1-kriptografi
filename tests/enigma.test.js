@@ -3,11 +3,12 @@ const enigma = require('../enigma');
 const plainTexts = [
     'irfansofyanaputra',
     'juniardiakbar',
-    'iniTuCiLKripTografi',
-    'iniTuCilRasaTubes',
-    'Kriptografi2020',
-    'PakRINALDIMUNIR',
-    'Ini tucil seperti Tubes Ya?'
+    'testenigmadong',
+    'inialgoritmaenigma',
+    'enigmasepertiangkatan2015',
+    'semogalolostestnya',
+    'aaaaaaakujatuhcintakepadamutolongberikancintamupadaku',
+    'semoganilaikriptografinyabagussehinggakubisawisudajuli'
 ];
 
 test('The encryption and decription should be success', () => {

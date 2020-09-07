@@ -33,8 +33,7 @@ class Rotors {
         return this._rotor;
     }
 
-
-    set rotor(key, config) {
+    setRotorConfig(key, config) {
         for (let i = 0; i < 3; ++i) {
             for (let j = 0; j < 2; ++j) {
                 let curr = (
@@ -96,13 +95,13 @@ class Rotors {
             if (i >= 1) rightPointer = this._rotor[i-1][1][leftPointer];
         }
 
-        return String.fromCharCode('A'.charCodeAt() + leftPointer);
+        return String.fromCharCode('a'.charCodeAt() + leftPointer);
     }
 }
 
 const encrypt = (plaintext, key, config) => {
     let rotors = new Rotors(key);
-    if (config.length > 0) rotors.rotor(config);
+    if (config.length > 0) rotors.setRotorConfig(key, config);
 
     let resultEncryption = '';
 
@@ -116,12 +115,12 @@ const encrypt = (plaintext, key, config) => {
 
 const decrypt = (cipher, key, config) => {
     let rotors = new Rotors(key);
-    if (config.length > 0) rotors.rotor(config);
+    if (config.length > 0) rotors.setRotorConfig(key, config);
 
     let resultDecryption = '';
     
     for (let i = 0; i < cipher.length; ++i) {
-        resultDecryption = resultDecryption + rotors.findDecryptedChar(plaintext[i]);
+        resultDecryption = resultDecryption + rotors.findDecryptedChar(cipher[i].toLowerCase());
         rotors.slideRotors();
     }
 
