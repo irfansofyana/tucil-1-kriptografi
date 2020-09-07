@@ -13,7 +13,6 @@ const autoKey = require("./cipher/varian_vigenere/auto_key_vigenere");
 const fullVigenere = require("./cipher/varian_vigenere/full_vigenere");
 
 const { intListToText, textToIntList } = require("./cipher/helper");
-const { matrix } = require("mathjs");
 
 const matrixFullVigenere = require("./cipher/varian_vigenere/helper").generateMatrix();
 
