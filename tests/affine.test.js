@@ -1,5 +1,5 @@
-const affine = require('../affine');
-const helper = require('../affine/helper');
+const affine = require('../cipher/affine');
+const helper = require('../cipher/affine/helper');
 
 const plainTexts = [
     'irfansofyanaputra',

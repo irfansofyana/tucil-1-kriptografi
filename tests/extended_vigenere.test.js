@@ -1,5 +1,5 @@
-const extended_vigenere = require('../extended_vigenere');
-const helper = require('../extended_vigenere/helper');
+const extended_vigenere = require('../cipher/extended_vigenere');
+const helper = require('../cipher/extended_vigenere/helper');
 
 const plainTexts = [
     'irfansofyanaputra',

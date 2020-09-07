@@ -1,6 +1,6 @@
-const full_vigenere = require('../varian_vigenere/full_vigenere');
-const auto_key_vigenere = require('../varian_vigenere/auto_key_vigenere');
-const helper = require('../varian_vigenere/helper');
+const full_vigenere = require('../cipher/varian_vigenere/full_vigenere');
+const auto_key_vigenere = require('../cipher/varian_vigenere/auto_key_vigenere');
+const helper = require('../cipher/varian_vigenere/helper');
 
 const plainTexts = [
     'irfansofyanaputra',

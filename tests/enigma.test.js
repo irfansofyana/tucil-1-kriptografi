@@ -1,4 +1,4 @@
-const enigma = require('../enigma');
+const enigma = require('../cipher/enigma');
 
 const plainTexts = [
     'irfansofyanaputra',
