@@ -1,5 +1,4 @@
 const { textToIntList, intListToText } = require("./helper");
-const { matrix } = require("mathjs");
 
 const CODE_I = 105;
 const CODE_J = 106;

@@ -1,30 +1,52 @@
+const express = require("express");
+const app = express();
+const port = 3000;
+
 const { encryptVigenere, decryptVigenere } = require("./cipher/vigenere");
 const { encryptSuper, decryptSuper } = require("./cipher/super");
 const { encryptHill, decryptHill } = require("./cipher/hill");
 const { textToIntList, intListToText } = require("./cipher/helper");
 
-const plaintext = "indonesia adalah negara maritim";
-const key = "mobil";
+app.set("view engine", "pug");
 
-const cipherVigenere = encryptVigenere(
-  textToIntList(plaintext),
-  textToIntList(key)
-);
-const plaintextVigenere = decryptVigenere(cipherVigenere, textToIntList(key));
+app.get("/", function (req, res) {
+  res.render("index", { title: "Hey", message: "Hello there!" });
+});
 
-console.log(intListToText(cipherVigenere));
-console.log(intListToText(plaintextVigenere));
+app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
+  const { algoritme, text, key } = req.params;
 
-const cipherSuper = encryptSuper(textToIntList(plaintext), textToIntList(key));
-const plaintextSuper = decryptSuper(cipherSuper, textToIntList(key));
+  switch (algoritme) {
+    case "vigenere":
+      res.send({
+        data: intListToText(
+          encryptVigenere(textToIntList(text), textToIntList(key))
+        ),
+      });
+      break;
 
-console.log(intListToText(cipherSuper));
-console.log(intListToText(plaintextSuper));
+    default:
+      break;
+  }
+});
 
-const cipherHill = encryptHill(
-  textToIntList("indonesia adalah negara maritim"),
-  textToIntList("gybnqkurp")
-);
-console.log(intListToText(cipherHill));
-const plaintextHill = decryptHill(cipherHill, textToIntList("gybnqkurp"));
-console.log(intListToText(plaintextHill));
+app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
+  const { algoritme, text, key } = req.params;
+
+  switch (algoritme) {
+    case "vigenere":
+      res.send({
+        data: intListToText(
+          decryptVigenere(textToIntList(text), textToIntList(key))
+        ),
+      });
+      break;
+
+    default:
+      break;
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});

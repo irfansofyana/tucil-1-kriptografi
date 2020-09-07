@@ -1,0 +1,28 @@
+{
+  "name": "tucil-1-kriptografi",
+  "version": "1.0.0",
+  "description": "Tucil 1 Kriptografi",
+  "main": "main.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mathjs": "^7.2.0",
+    "pug": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/irfansofyana/tucil-1-kriptografi.git"
+  },
+  "keywords": [
+    "kriptografi"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/irfansofyana/tucil-1-kriptografi/issues"
+  },
+  "homepage": "https://github.com/irfansofyana/tucil-1-kriptografi#readme"
+}
