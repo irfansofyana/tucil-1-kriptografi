@@ -1,7 +1,7 @@
-const { matrix, multiply } = require("mathjs");
-const { mod, div, inverseMatrix } = require("../helper");
+const { matrix, multiply, det, transpose } = require("mathjs");
+const { mod, div, inverseMatrix, gcd, modularInverse } = require("../helper");
 const N = 3;
-const BLANKCHAR = 26;
+const BLANKCHAR = 23;
 
 const generateKeyMatrix = (key) => {
   const keyMatrix = [];
@@ -69,29 +69,45 @@ const matrixToCipherList = (matrix) => {
   return output;
 };
 
-const matrixToPlaintextList = (matrix) => {
+const matrixToPlaintextList = (matrix, key) => {
   let output = [];
+  const modInverseDet = modularInverse(mod(Math.round(det(key)), 26), 26);
+
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
-      output.push(mod(matrix[i][j], 26) + 97);
+      output.push(mod(matrix[i][j] * modInverseDet, 26) + 97);
     }
   }
 
   return output;
 };
 
-exports.encrypt = (plaintext, key) => {
-  const matrixPlaintext = generatePlaintextMatrix(plaintext);
+exports.checkRelativePrime = (key) => {
   const matrixKey = generateKeyMatrix(key);
-  const matrixCipher = multiplicationMatrix(matrixPlaintext, matrixKey);
+  const determinan = Math.round(det(matrixKey));
 
-  return matrixToCipherList(matrixCipher);
+  if (gcd(determinan, 26) == 1) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+exports.encrypt = (plaintext, key) => {
+  const matrixPlaintext = transpose(generatePlaintextMatrix(plaintext));
+  const matrixKey = generateKeyMatrix(key);
+  const matrixCipher = multiplicationMatrix(matrixKey, matrixPlaintext);
+
+  return matrixToCipherList(transpose(matrixCipher));
 };
 
 exports.decrypt = (cipher, key) => {
-  const matrixCipher = generateCipherMatrix(cipher);
+  const matrixCipher = transpose(generateCipherMatrix(cipher));
   const matrixKey = inverseMatrix(generateKeyMatrix(key));
-  const matrixPlainText = multiplicationMatrix(matrixCipher, matrixKey);
+  const matrixPlainText = multiplicationMatrix(matrixKey, matrixCipher);
 
-  return matrixToPlaintextList(matrixPlainText);
+  return matrixToPlaintextList(
+    transpose(matrixPlainText),
+    generateKeyMatrix(key)
+  );
 };

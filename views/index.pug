@@ -38,6 +38,9 @@ html
           label(for='ciphertext') Ciphertext
           textarea#ciphertext.form-control(rows='2')
         
+        .alert.alert-danger(role="alert")
+          | Key is not valid
+
         .form-group
           label(for='key') Key
           textarea#key.form-control(rows='1')
@@ -62,6 +65,7 @@ html
 
       resultGroup.style.display = "none";
       ciphertextGroup.style.display = "none";
+      document.querySelector(".alert").style.display = "none";
       
       document.querySelector("#encrypt-radio").addEventListener("change", function() {
         isEncrypt = true;
@@ -117,7 +121,26 @@ html
       document.querySelector(".btn").addEventListener("click", function(event) {
         event.preventDefault();
 
-        if (isEncrypt) {
+        var isValid = true;
+
+        if (algoritme[selectedOption] == "hill") {
+          document.querySelector(".alert").style.display = "none";
+
+          fetch(`/check/hill/${key.value}`)
+            .then(async function(data) {
+              const result = await data.json();
+              if (!result.data) {
+                isValid = true;
+                document.querySelector(".alert").style.display = "block";
+              }
+
+            })
+            .catch(function(err) {
+              console.error(err);
+            })
+        }
+
+        if (isEncrypt && isValid) {
           fetch(`/encrypt/${algoritme[selectedOption]}/${plaintext.value}/${key.value}`)
             .then(async function(data) {
               var encryptedText = await data.json();
@@ -129,7 +152,7 @@ html
             .catch(function(err) {
               console.error(err);
             })
-        } else {
+        } else if (!isEncrypt && isValid) {
           fetch(`/decrypt/${algoritme[selectedOption]}/${ciphertext.value}/${key.value}`)
             .then(async function(data) {
               var decryptedText = await data.json();

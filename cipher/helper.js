@@ -54,14 +54,14 @@ exports.intListToText = (intList) => {
   return intListToCharList(intList).join("");
 };
 
-const gcd = (a, b) => {
+exports.gcd = (a, b) => {
   if (!b) {
     return a;
   }
-  return gcd(b, a % b);
+  return this.gcd(b, a % b);
 };
 
-const modularInverse = (m, n) => {
+exports.modularInverse = (m, n) => {
   m = m % n;
 
   let x = m;
@@ -95,13 +95,10 @@ const modularInverse = (m, n) => {
       result = n - adds[0];
     }
   }
-
   return result;
 };
 
 exports.inverseMatrix = (matrix) => {
-  const modularInverseDet = modularInverse(Math.round(det(matrix)), 26);
-
   let minorMatrix = [
     [0, 0, 0],
     [0, 0, 0],
@@ -124,7 +121,7 @@ exports.inverseMatrix = (matrix) => {
 
   for (let i = 0; i < minorMatrix.length; i++) {
     for (let j = 0; j < minorMatrix[i].length; j++) {
-      adjointMatrix[j][i] = this.mod(modularInverseDet * minorMatrix[i][j], 26);
+      adjointMatrix[j][i] = minorMatrix[i][j];
     }
   }
   return adjointMatrix;

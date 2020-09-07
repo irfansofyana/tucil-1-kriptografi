@@ -21,6 +21,12 @@ const sendData = (res, arrayOfInt) => {
   });
 };
 
+app.get("/check/hill/:key", function (req, res) {
+  res.send({
+    data: hill.checkRelativePrime(textToIntList(req.params.key)),
+  });
+});
+
 app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
   const { algoritme } = req.params;
   const text = textToIntList(req.params.text);
