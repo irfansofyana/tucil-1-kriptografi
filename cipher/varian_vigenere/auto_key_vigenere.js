@@ -27,7 +27,7 @@ const decrypt = (cipher, key) => {
     for (let i = 0; i < cipher.length; ++i){
         let charKey = '';
         if (keyIndex >= key.length) {
-            charKey = cipher[cipherIdx];
+            charKey = resultDecryption[cipherIdx];
             cipherIdx++;
         } else {
             charKey = key[keyIndex];
