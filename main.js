@@ -13,16 +13,21 @@ app.get("/", function (req, res) {
   res.render("index", { title: "Hey", message: "Hello there!" });
 });
 
+const sendData = (res, arrayOfInt) => {
+  return res.send({
+    data: intListToText(arrayOfInt),
+  });
+};
+
 app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
   const { algoritme, text, key } = req.params;
 
   switch (algoritme) {
     case "vigenere":
-      res.send({
-        data: intListToText(
-          encryptVigenere(textToIntList(text), textToIntList(key))
-        ),
-      });
+      sendData(res, encryptVigenere(textToIntList(text), textToIntList(key)));
+      break;
+    case "super":
+      sendData(res, encryptSuper(textToIntList(text), textToIntList(key)));
       break;
 
     default:
@@ -35,11 +40,10 @@ app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
 
   switch (algoritme) {
     case "vigenere":
-      res.send({
-        data: intListToText(
-          decryptVigenere(textToIntList(text), textToIntList(key))
-        ),
-      });
+      sendData(res, decryptVigenere(textToIntList(text), textToIntList(key)));
+      break;
+    case "super":
+      sendData(res, decryptSuper(textToIntList(text), textToIntList(key)));
       break;
 
     default:

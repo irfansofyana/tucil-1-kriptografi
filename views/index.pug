@@ -19,30 +19,62 @@ html
             option Hill Cipher
             option Affine Cipher
             option Enigma Cipher
-        .form-group
-          label(for='text') Text
-          textarea#text.form-control(rows='2')
+
+        .form-check
+          input#encrypt-radio.form-check-input(type='radio' name='radio' value='encrypt' checked='')
+          label.form-check-label(for='encrypt-radio')
+            | Encrypt
+
+        .form-check
+          input#decrypt-radio.form-check-input(type='radio' name='radio' value='decrypt')
+          label.form-check-label(for='decrypt-radio')
+            | Decrypt 
+        
+        .form-group#plaintext-group
+          label(for='plaintext') Plaintext
+          textarea#plaintext.form-control(rows='2')
+        
+        .form-group#ciphertext-group
+          label(for='ciphertext') Ciphertext
+          textarea#ciphertext.form-control(rows='2')
+        
         .form-group
           label(for='key') Key
           textarea#key.form-control(rows='1')
 
-        button.btn.btn-encrypt.btn-success.mr-3 Encrypt
-        button.btn.btn-decrypt.btn-danger Decrypt
+        button.btn.btn-success Process
 
         .form-group#result-group
           label#label-result(for='result-text')
           textarea#result-text.form-control(rows='2')
 
     script(type='text/javascript').
-      var text = document.querySelector("#text");
+      var plaintextGroup = document.querySelector("#plaintext-group");
+      var ciphertextGroup = document.querySelector("#ciphertext-group");
+      var plaintext = document.querySelector("#plaintext");
+      var ciphertext = document.querySelector("#ciphertext");
       var key = document.querySelector("#key");
 
-      var result = document.querySelector("#result-group");
+      var resultGroup = document.querySelector("#result-group");
       var labelResult = document.querySelector("#label-result");
       var textResult = document.querySelector("#result-group #result-text");
+      var isEncrypt = true;
 
-      result.style.display = "none";
+      resultGroup.style.display = "none";
+      ciphertextGroup.style.display = "none";
       
+      document.querySelector("#encrypt-radio").addEventListener("change", function() {
+        isEncrypt = true;
+        plaintextGroup.style.display = "block";
+        ciphertextGroup.style.display = "none";
+      });
+
+      document.querySelector("#decrypt-radio").addEventListener("change", function() {
+        isEncrypt = false;
+        plaintextGroup.style.display = "none";
+        ciphertextGroup.style.display = "block";
+      });
+
       function getSelectedOptions(select) {
         var options = select.getElementsByTagName('option');
         for (var i = 0; i < options.length; i++) {
@@ -62,42 +94,54 @@ html
         "Enigma Cipher": "enigma"
       }
 
-      document.querySelector(".btn-encrypt").addEventListener("click", function(event) {
+      var select = document.querySelector('#algoritme');
+      var selectedOption = getSelectedOptions(select).text;
+
+      function alphabetOnly(text) {
+        return text.replace(/[^a-zA-Z]+/g, '')
+      }
+
+      document.querySelector("#plaintext").addEventListener("input", function() {
+        var selectedAlgo  =algoritme[selectedOption]; 
+        
+        if (
+          selectedAlgo == "vigenere" || 
+          selectedAlgo == "super" || 
+          selectedAlgo == "playfair" || 
+          selectedAlgo == "gill"
+        ) {
+          plaintext.value = alphabetOnly(plaintext.value.toLowerCase());
+        }
+      })
+
+      document.querySelector(".btn").addEventListener("click", function(event) {
         event.preventDefault();
 
-        var select = document.querySelector('#algoritme');
-        var selectedOption = getSelectedOptions(select).text;
+        if (isEncrypt) {
+          fetch(`/encrypt/${algoritme[selectedOption]}/${plaintext.value}/${key.value}`)
+            .then(async function(data) {
+              var encryptedText = await data.json();
 
-        fetch(`/encrypt/${algoritme[selectedOption]}/${text.value}/${key.value}`)
-          .then(async function(data) {
-            var encryptedText = await data.json();
+              resultGroup.style.display = "block";
+              labelResult.innerHTML = "Hasil encrypt"
+              textResult.innerHTML = encryptedText.data;
+            })
+            .catch(function(err) {
+              console.error(err);
+            })
+        } else {
+          fetch(`/decrypt/${algoritme[selectedOption]}/${ciphertext.value}/${key.value}`)
+            .then(async function(data) {
+              var decryptedText = await data.json();
 
-            result.style.display = "block";
-            labelResult.innerHTML = "Hasil encrypt"
-            textResult.innerHTML = encryptedText.data;
-          })
-          .catch(function(err) {
-            console.error(err);
-          })
-      });
-
-       document.querySelector(".btn-decrypt").addEventListener("click", function(event) {
-        event.preventDefault();
-
-        var select = document.querySelector('#algoritme');
-        var selectedOption = getSelectedOptions(select).text;
-
-        fetch(`/decrypt/${algoritme[selectedOption]}/${text.value}/${key.value}`)
-          .then(async function(data) {
-            var decryptedText = await data.json();
-
-            result.style.display = "block";
-            labelResult.innerHTML = "Hasil decrypt"
-            textResult.innerHTML = decryptedText.data;
-          })
-          .catch(function(err) {
-            console.error(err);
-          })
+              resultGroup.style.display = "block";
+              labelResult.innerHTML = "Hasil decrypt"
+              textResult.innerHTML = decryptedText.data;
+            })
+            .catch(function(err) {
+              console.error(err);
+            })
+        }
       });
 
     script(src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous')
