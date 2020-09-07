@@ -1,9 +1,9 @@
-const { mod, isLowercase, isUppercase } = require("./helper");
+const { mod, isLowercase, isUppercase } = require("../helper");
 
 /*
  * Returns the result the Vigenère encryption on the given text with the given key.
  */
-exports.encryptVigenere = (plaintext, key) => {
+exports.encrypt = (plaintext, key) => {
   const output = [];
   let j = 0;
 
@@ -22,7 +22,7 @@ exports.encryptVigenere = (plaintext, key) => {
   return output;
 };
 
-exports.decryptVigenere = (cipher, key) => {
+exports.decrypt = (cipher, key) => {
   const output = [];
   let j = 0;
 

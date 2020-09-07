@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-const { encryptVigenere, decryptVigenere } = require("./cipher/vigenere");
-const { encryptSuper, decryptSuper } = require("./cipher/super");
-const { encryptHill, decryptHill } = require("./cipher/hill");
-const { textToIntList, intListToText } = require("./cipher/helper");
+const vigenere = require("./cipher/vigenere");
+const superCipher = require("./cipher/super");
+const hill = require("./cipher/hill");
+const playfair = require("./cipher/playfair");
+
+const { intListToText, textToIntList } = require("./cipher/helper");
 
 app.set("view engine", "pug");
 
@@ -20,14 +22,22 @@ const sendData = (res, arrayOfInt) => {
 };
 
 app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
-  const { algoritme, text, key } = req.params;
+  const { algoritme } = req.params;
+  const text = textToIntList(req.params.text);
+  const key = textToIntList(req.params.key);
 
   switch (algoritme) {
     case "vigenere":
-      sendData(res, encryptVigenere(textToIntList(text), textToIntList(key)));
+      sendData(res, vigenere.encrypt(text, key));
       break;
     case "super":
-      sendData(res, encryptSuper(textToIntList(text), textToIntList(key)));
+      sendData(res, superCipher.encrypt(text, key));
+      break;
+    case "hill":
+      sendData(res, hill.encrypt(text, key));
+      break;
+    case "playfair":
+      sendData(res, playfair.encrypt(text, key));
       break;
 
     default:
@@ -36,14 +46,22 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
 });
 
 app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
-  const { algoritme, text, key } = req.params;
+  const { algoritme } = req.params;
+  const text = textToIntList(req.params.text);
+  const key = textToIntList(req.params.key);
 
   switch (algoritme) {
     case "vigenere":
-      sendData(res, decryptVigenere(textToIntList(text), textToIntList(key)));
+      sendData(res, vigenere.decrypt(text, key));
       break;
     case "super":
-      sendData(res, decryptSuper(textToIntList(text), textToIntList(key)));
+      sendData(res, superCipher.decrypt(text, key));
+      break;
+    case "hill":
+      sendData(res, hill.decrypt(text, key));
+      break;
+    case "playfair":
+      sendData(res, playfair.decrypt(text, key));
       break;
 
     default:

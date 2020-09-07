@@ -97,20 +97,20 @@ html
       var select = document.querySelector('#algoritme');
       var selectedOption = getSelectedOptions(select).text;
 
+      document.querySelector("select").addEventListener("change", function() {
+        selectedOption = getSelectedOptions(select).text;
+      });
+
       function alphabetOnly(text) {
         return text.replace(/[^a-zA-Z]+/g, '')
       }
 
       document.querySelector("#plaintext").addEventListener("input", function() {
-        var selectedAlgo  =algoritme[selectedOption]; 
-        
-        if (
-          selectedAlgo == "vigenere" || 
-          selectedAlgo == "super" || 
-          selectedAlgo == "playfair" || 
-          selectedAlgo == "gill"
-        ) {
-          plaintext.value = alphabetOnly(plaintext.value.toLowerCase());
+        plaintext.value = alphabetOnly(plaintext.value.toLowerCase());
+        var selectedAlgo = algoritme[selectedOption]; 
+
+        if (!selectedAlgo == "enigma") {
+          plaintext.value = plaintext.value.toLowerCase();
         }
       })
 

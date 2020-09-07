@@ -1,5 +1,5 @@
 const { matrix, multiply } = require("mathjs");
-const { mod, div, inverseMatrix } = require("./helper");
+const { mod, div, inverseMatrix } = require("../helper");
 const N = 3;
 const BLANKCHAR = 26;
 
@@ -80,20 +80,18 @@ const matrixToPlaintextList = (matrix) => {
   return output;
 };
 
-exports.encryptHill = (plaintext, key) => {
+exports.encrypt = (plaintext, key) => {
   const matrixPlaintext = generatePlaintextMatrix(plaintext);
   const matrixKey = generateKeyMatrix(key);
   const matrixCipher = multiplicationMatrix(matrixPlaintext, matrixKey);
 
-  console.log(matrixToCipherList(matrixCipher));
   return matrixToCipherList(matrixCipher);
 };
 
-exports.decryptHill = (cipher, key) => {
+exports.decrypt = (cipher, key) => {
   const matrixCipher = generateCipherMatrix(cipher);
   const matrixKey = inverseMatrix(generateKeyMatrix(key));
   const matrixPlainText = multiplicationMatrix(matrixCipher, matrixKey);
 
-  console.log(matrixToPlaintextList(matrixPlainText));
   return matrixToPlaintextList(matrixPlainText);
 };

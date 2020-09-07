@@ -1,4 +1,4 @@
-const { textToIntList, intListToText } = require("./helper");
+const { textToIntList, toLowerCase } = require("../helper");
 
 const CODE_I = 105;
 const CODE_J = 106;
@@ -94,13 +94,13 @@ const processDecryptPlayfair = (matrix, bigram) => {
 
   if (locationA[0] == locationB[0]) {
     return [
-      matrix[locationA[0]][(locationA[1] - 1) % 5],
-      matrix[locationA[0]][(locationB[1] - 1) % 5],
+      matrix[locationA[0]][(locationA[1] + 4) % 5],
+      matrix[locationA[0]][(locationB[1] + 4) % 5],
     ];
   } else if (locationA[1] == locationB[1]) {
     return [
-      matrix[(locationA[0] - 1) % 5][locationA[1]],
-      matrix[(locationB[0] - 1) % 5][locationA[1]],
+      matrix[(locationA[0] + 4) % 5][locationA[1]],
+      matrix[(locationB[0] + 4) % 5][locationA[1]],
     ];
   } else {
     return [
@@ -110,42 +110,31 @@ const processDecryptPlayfair = (matrix, bigram) => {
   }
 };
 
-exports.encryptPlayfair = (plaintext, key) => {
+exports.encrypt = (plaintext, key) => {
   const bigramArray = generateBigram(plaintext);
   const keyMatrix = generateKeyMatrix(key);
   const output = [];
 
   for (let i = 0; i < bigramArray.length; i++) {
     const bigram = processEncryptPlayfair(keyMatrix, bigramArray[i]);
-    output.push(bigram[0]);
-    output.push(bigram[1]);
+    output.push(bigram[0] - 32);
+    output.push(bigram[1] - 32);
   }
 
   return output;
 };
 
-exports.decryptPlayfair = (cipher, key) => {
-  const bigramArray = generateBigram(cipher);
+exports.decrypt = (cipher, key) => {
+  const bigramArray = generateBigram(toLowerCase(cipher));
   const keyMatrix = generateKeyMatrix(key);
   const output = [];
 
   for (let i = 0; i < bigramArray.length; i++) {
     const bigram = processDecryptPlayfair(keyMatrix, bigramArray[i]);
+
     output.push(bigram[0]);
     output.push(bigram[1]);
   }
 
   return output;
 };
-
-const cipher = this.encryptPlayfair(
-  textToIntList("temuiibunantimalam"),
-  textToIntList("jalanganeshasepuluh")
-);
-const plaintext = this.decryptPlayfair(
-  cipher,
-  textToIntList("jalanganeshasepuluh")
-);
-
-console.log(intListToText(cipher));
-console.log(intListToText(plaintext));

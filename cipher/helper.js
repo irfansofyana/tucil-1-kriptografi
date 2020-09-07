@@ -1,24 +1,33 @@
 const { det } = require("mathjs");
 
-const mod = (n, m) => {
+exports.mod = (n, m) => {
   return ((n % m) + m) % m;
 };
 
-const div = (n, m) => {
+exports.div = (n, m) => {
   return Math.floor(n / m);
 };
 
 // Tests whether the specified character code is an uppercase letter.
-const isUppercase = (c) => {
+exports.isUppercase = (c) => {
   return 65 <= c && c <= 90; // 65 is character code for 'A'. 90 is 'Z'.
 };
 
 // Tests whether the specified character code is a lowercase letter.
-const isLowercase = (c) => {
+exports.isLowercase = (c) => {
   return 97 <= c && c <= 122; // 97 is character code for 'a'. 122 is 'z'.
 };
 
-const textToIntList = (text) => {
+exports.toLowerCase = (arrayInt) => {
+  const output = [];
+  arrayInt.forEach((n) => {
+    output.push(n + 32);
+  });
+
+  return output;
+};
+
+exports.textToIntList = (text) => {
   const intList = [];
 
   for (let i = 0; i < text.length; i++) {
@@ -41,7 +50,7 @@ const intListToCharList = (intList) => {
   return charList;
 };
 
-const intListToText = (intList) => {
+exports.intListToText = (intList) => {
   return intListToCharList(intList).join("");
 };
 
@@ -90,7 +99,7 @@ const modularInverse = (m, n) => {
   return result;
 };
 
-const inverseMatrix = (matrix) => {
+exports.inverseMatrix = (matrix) => {
   const modularInverseDet = modularInverse(Math.round(det(matrix)), 26);
 
   let minorMatrix = [
@@ -115,18 +124,8 @@ const inverseMatrix = (matrix) => {
 
   for (let i = 0; i < minorMatrix.length; i++) {
     for (let j = 0; j < minorMatrix[i].length; j++) {
-      adjointMatrix[j][i] = mod(modularInverseDet * minorMatrix[i][j], 26);
+      adjointMatrix[j][i] = this.mod(modularInverseDet * minorMatrix[i][j], 26);
     }
   }
   return adjointMatrix;
-};
-
-module.exports = {
-  mod,
-  div,
-  textToIntList,
-  isLowercase,
-  isUppercase,
-  intListToText,
-  inverseMatrix,
 };

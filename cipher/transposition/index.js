@@ -1,7 +1,7 @@
-const { div, mod } = require("./helper");
-const K = 4;
+const { div, mod } = require("../helper");
+const K = 3;
 
-exports.encryptTranspose = (plaintext) => {
+exports.encrypt = (plaintext) => {
   const output = [];
   const matrix = [];
 
@@ -21,7 +21,7 @@ exports.encryptTranspose = (plaintext) => {
   return output;
 };
 
-exports.decryptTranspose = (chiper) => {
+exports.decrypt = (chiper) => {
   const output = [];
   const matrix = [];
   let index = 0;
