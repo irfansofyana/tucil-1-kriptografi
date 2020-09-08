@@ -325,6 +325,11 @@ html
               alert.style.display = "block";
               isValid = false;
             }
+          } else if (algoritme[selectedOption] === "enigma") {
+            if (key.value.length != 3) {
+              isValid = false;
+              alert.style.display = "block";
+            } 
           }
         } catch (err) {
           isValid = false;
