@@ -139,6 +139,7 @@ app.post("/decrypt/:algoritme", function (req, res) {
       break;
     case "extended":
       sendData(res, extended.decrypt(text, key), false);
+      break;
     case "enigma":
       sendData(res, enigma.decrypt(text, key, rotorsConfig), false);
       break;
