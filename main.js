@@ -1,16 +1,6 @@
 const bodyParser = require("body-parser");
 const express = require("express");
-const multer = require("multer");
 const app = express();
-const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, "./uploads");
-  },
-  filename: function (req, file, callback) {
-    callback(null, file.fieldname + "-" + Date.now());
-  },
-});
-const upload = multer({ storage: storage }).single("file");
 
 const port = 3000;
 
@@ -74,9 +64,9 @@ app.post("/encrypt/:algoritme", function (req, res) {
     var key1 = req.body.key1;
     var key2 = req.body.key2;
   } else {
-    var key =  ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.body.key)
-    : req.body.key;
+    var key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+      ? textToIntList(req.body.key)
+      : req.body.key;
   }
 
   switch (algoritme) {
@@ -122,9 +112,9 @@ app.post("/decrypt/:algoritme", function (req, res) {
     var key1 = req.body.key1;
     var key2 = req.body.key2;
   } else {
-    var key =  ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.body.key)
-    : req.body.key;
+    var key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+      ? textToIntList(req.body.key)
+      : req.body.key;
   }
 
   switch (algoritme) {
@@ -159,8 +149,8 @@ app.post("/decrypt/:algoritme", function (req, res) {
   }
 });
 
-app.get("/decrypt/affine/:text/:key1/:key2", function(req, res) {
-  const {text, key1, key2} = req.params;
+app.get("/decrypt/affine/:text/:key1/:key2", function (req, res) {
+  const { text, key1, key2 } = req.params;
   sendData(res, affine.decrypt(text, key1, key2));
 });
 
