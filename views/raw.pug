@@ -123,6 +123,9 @@ html
       var fileValue = true;
       var withSpasi = false;
 
+      var file;
+      var testes;
+
       resultGroup.style.display = "none";
       alert.style.display = "none";
       ciphertextGroup.style.display = "none";
@@ -233,10 +236,24 @@ html
         return output;
       }
 
+      function ab2str(buf) {
+        return String.fromCharCode.apply(null, new Uint8Array(buf));
+      }
+
+      function str2ab(str) {
+        var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+        var bufView = new Uint8Array(buf);
+        
+        for (var i = 0, strLen = str.length; i < strLen; i++) {
+          bufView[i] = str.charCodeAt(i);
+        }
+
+        return buf;
+      }
+
       document.querySelector('#inputPlaintextFile').addEventListener('input', function(evt) {
         var files = evt.target.files;
-        var file = files[0];
-
+        file = files[0];
         inputFileLabel.innerHTML = file.name;
 
         var reader = new FileReader();
@@ -250,21 +267,16 @@ html
           reader.readAsText(file)
         } else {
           var fileByteArray = [];
-          var output = "";
 
           reader.readAsArrayBuffer(file);
           reader.onloadend = function (evt) {
             if (evt.target.readyState == FileReader.DONE) {
               var arrayBuffer = evt.target.result;
-              var array = new Uint8Array(arrayBuffer);
+              console.log(arrayBuffer);
 
-              for (var i = 0; i < array.length; i++) {
-                fileByteArray.push(array[i]);
-                output += String.fromCharCode(array[i])
-              }
-
-              console.log(output)
-
+              
+              var output = ab2str(arrayBuffer);
+              console.log(output);
               if (isEncrypt) plaintext.value = output;            
               else ciphertext.value = output;
             }
@@ -364,9 +376,13 @@ html
               .then(async function(response) {
                 var encryptedText = await response.json();
 
-                resultGroup.style.display = "block";
-                labelResult.innerHTML = "Hasil encrypt"
-                textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
+                if (fileValue) {
+                  resultGroup.style.display = "block";
+                  labelResult.innerHTML = "Hasil encrypt"
+                  textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
+                } else {
+                  downloadFile(file.name, [str2ab(encryptedText.data)], 'octet/stream')
+                }
               })
               .catch(function(err) {
                 console.error(err);
@@ -400,9 +416,13 @@ html
             .then(async function(response) {
               var decryptedText = await response.json();
 
-              resultGroup.style.display = "block";
-              labelResult.innerHTML = "Hasil decrypt"
-              textResult.value = decryptedText.data;
+              if (fileValue) {
+                resultGroup.style.display = "block";
+                labelResult.innerHTML = "Hasil decrypt"
+                textResult.value = decryptedText.data;
+              } else {
+                downloadFile(file.name, [str2ab(decryptedText.data)], 'octet/stream')
+              }
             })
             .catch(function(err) {
               console.error(err);
@@ -410,27 +430,32 @@ html
         }
       });
 
+      function downloadFile(filename, data, type) {
+        var file = new Blob(data, { type });
+
+        console.log(data)
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+          window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+          var a = document.createElement("a")
+          var url = URL.createObjectURL(file);
+          
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          
+          setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+          }, 0); 
+        }
+      }
+
       buttonDownload.addEventListener("click", function() {
         var filename = Date.now() + ".txt";
         var data = textResult.value;
-        var file = new Blob([data], {type: "text/plain"});
-        
-        if (window.navigator.msSaveOrOpenBlob) // IE10+
-            window.navigator.msSaveOrOpenBlob(file, filename);
-        else { // Others
-            var a = document.createElement("a")
-            var url = URL.createObjectURL(file);
-            
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            
-            setTimeout(function() {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);  
-            }, 0); 
-        }
+        downloadFile(filename, [ data ], "text/plain");
       })
 
     script(src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous')
