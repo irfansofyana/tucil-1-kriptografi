@@ -1,5 +1,16 @@
 const express = require("express");
+const multer = require("multer");
 const app = express();
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "./uploads");
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.fieldname + "-" + Date.now());
+  },
+});
+const upload = multer({ storage: storage }).single("file");
+
 const port = 3000;
 
 const vigenere = require("./cipher/vigenere");
@@ -19,12 +30,21 @@ const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
 
 app.set("view engine", "pug");
 
+app.post("/upload/file", function (req, res) {
+  upload(req, res, function (err) {
+    if (err) {
+      return res.end("Error uploading file.");
+    }
+    res.end("File is uploaded");
+  });
+});
+
 app.get("/", function (req, res) {
   res.render("raw", { title: "Hey" });
 });
 
 app.get("/file", function (req, res) {
-  res.render("raw", { title: "Hey" });
+  res.render("file", { title: "Hey" });
 });
 
 const sendData = (res, data, needCasting) => {

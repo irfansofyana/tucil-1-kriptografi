@@ -9,7 +9,11 @@ html
     .container
       .card.mt-4
         .card-header
-          | Traditional Cipher
+          ul.nav.nav-tabs.card-header-tabs
+            li.nav-item
+              a.nav-link(href='/') Raw input
+            li.nav-item
+              a.nav-link.active(href='/file') File input
 
         .card-body
           form
@@ -26,33 +30,24 @@ html
                 option Affine Cipher
                 option Enigma Cipher
             
-            .file-method-group.mb-3
-              .form-check.form-check-inline
-                input#value-radio.form-check-input(type='radio' name='radio-file' value='value' checked='')
-                label.form-check-label(for='value-radio')
-                  | File's value
+            label Pilih metode
 
-              .form-check.form-check-inline
-                input#byte-radio.form-check-input(type='radio' name='radio-file' value='byte')
-                label.form-check-label(for='byte-radio')
-                  | File's byte
-
-            .form-check.form-check-inline
+            .form-check
               input#encrypt-radio.form-check-input(type='radio' name='radio' value='encrypt' checked='')
               label.form-check-label(for='encrypt-radio')
                 | Encrypt
 
-            .form-check.form-check-inline
+            .form-check
               input#decrypt-radio.form-check-input(type='radio' name='radio' value='decrypt')
               label.form-check-label(for='decrypt-radio')
                 | Decrypt 
             
             .form-group.mt-3
-              label Pilih file (optional)
+              label Pilih file
               .input-group.mb-3
                 .custom-file
                   input#inputPlaintextFile.custom-file-input(type='file')
-                  label.custom-file-label#input-file-label(for='inputFile') Choose file
+                  label.custom-file-label(for='inputFile') Choose file
 
             .form-group.mt-3#plaintext-group
               label(for='plaintext') Plaintext
@@ -69,25 +64,11 @@ html
               label(for='key') Key
               textarea#key.form-control(rows='1')
 
-            .spasi-cipher-group.mb-3
-              .form-check.form-check-inline
-                input#no-spasi-radio.form-check-input(type='radio' name='radio-cipher' value='no-spasi' checked='')
-                label.form-check-label(for='no-spasi-radio')
-                  | Tanpa spasi
-
-              .form-check.form-check-inline
-                input#with-spasi-radio.form-check-input(type='radio' name='radio-cipher' value='with-spasi')
-                label.form-check-label(for='with-spasi-radio')
-                  | Kelompok 5 huruf
-
-            button.btn.btn-success#btn-process Process
+            button.btn.btn-success Process
 
             .form-group.mt-3#result-group
               label#label-result(for='result-text')
               textarea#result-text.form-control(rows='2')
-              
-              button.btn.btn-success.mt-3#btn-download Download
-
 
     script(type='text/javascript').
       var plaintextGroup = document.querySelector("#plaintext-group");
@@ -99,20 +80,12 @@ html
       var labelResult = document.querySelector("#label-result");
       var textResult = document.querySelector("#result-group #result-text");
       var alert = document.querySelector(".alert");
-      var inputFileLabel = document.querySelector("#input-file-label");
-      var fileMethodGroup = document.querySelector(".file-method-group");
-      var spasiCipherGroup = document.querySelector(".spasi-cipher-group");
-
-      var buttonProcess = document.querySelector("#btn-process")
-      var buttonDownload = document.querySelector("#btn-download")
 
       var isEncrypt = true;
-      var withSpasi = false;
 
       resultGroup.style.display = "none";
-      alert.style.display = "none";
       ciphertextGroup.style.display = "none";
-      fileMethodGroup.style.display = "none";
+      alert.style.display = "none";
       
       document.querySelector("#encrypt-radio").addEventListener("change", function() {
         isEncrypt = true;
@@ -120,9 +93,8 @@ html
         plaintextGroup.style.display = "block";
         ciphertextGroup.style.display = "none";
         
-        plaintext.value = "";
-        ciphertext.value = "";
-        inputFileLabel.innerHTML = "Choose file";
+        plaintext.value = ""
+        ciphertext.value = ""
       });
 
       document.querySelector("#decrypt-radio").addEventListener("change", function() {
@@ -130,19 +102,9 @@ html
         
         plaintextGroup.style.display = "none";
         ciphertextGroup.style.display = "block";
-        spasiCipherGroup.style.display = "none";
 
-        plaintext.value = "";
-        ciphertext.value = "";
-        inputFileLabel.innerHTML = "Choose file";
-      });
-
-      document.querySelector("#with-spasi-radio").addEventListener("change", function() {
-        withSpasi = true;
-      });
-
-      document.querySelector("#no-spasi-radio").addEventListener("change", function() {
-        withSpasi = false;
+        plaintext.value = ""
+        ciphertext.value = ""
       });
 
       function getSelectedOptions(select) {
@@ -171,57 +133,37 @@ html
 
       document.querySelector("select").addEventListener("change", function() {
         selectedOption = getSelectedOptions(select).text;
-        if (algoritme[selectedOption] == "extended") fileMethodGroup.style.display = "block";
       });
 
       function alphabetOnly(text) {
         return text.replace(/[^a-zA-Z]+/g, '')
       }
 
-      function groupingText(text) {
-        var output = "";
-        for (let i = 0; i < text.length; i++) {
-          output += text[i];
-          if (i % 5 == 4) output += " ";
-        }
-
-        return output;
-      }
-
-      document.querySelector('#inputPlaintextFile').addEventListener('input', function(evt) {
+      document.querySelector('#inputPlaintextFile').addEventListener('change', function(evt) {
         var files = evt.target.files;
-        var file = files[0];
-        console.log(file)
-        inputFileLabel.innerHTML = file.name;
-
+        var file = files[0];           
         var reader = new FileReader();
         reader.onload = function(event) {
-          if (isEncrypt) plaintext.value = alphabetOnly(event.target.result.toLowerCase());            
-          else ciphertext.value = alphabetOnly(event.target.result.toUpperCase());
+          if (isEncrypt) plaintext.value = event.target.result;            
+          else ciphertext.value = event.target.result;
         }
-        
         reader.readAsText(file)
       }, false);
       
-      plaintext.addEventListener("input", function() {
-        var selectedAlgo = algoritme[selectedOption];
-        if (selectedAlgo != "extended") {
-          plaintext.value = alphabetOnly(plaintext.value.toLowerCase());
-        }
-      })
-
-      ciphertext.addEventListener("input", function() {
+      document.querySelector("#plaintext").addEventListener("input", function() {
+        plaintext.value = alphabetOnly(plaintext.value.toLowerCase());
         var selectedAlgo = algoritme[selectedOption]; 
-        if (selectedAlgo != "extended") {
-          ciphertext.value = alphabetOnly(ciphertext.value.toUpperCase());
+
+        if (!selectedAlgo == "enigma") {
+          plaintext.value = plaintext.value.toLowerCase();
         }
       })
 
-      key.addEventListener("input", function() {
+      document.querySelector("#key").addEventListener("input", function() {
         key.value = alphabetOnly(key.value.toLowerCase());
       })
 
-      buttonProcess.addEventListener("click", async function(event) {
+      document.querySelector(".btn").addEventListener("click", async function(event) {
         event.preventDefault();
         alert.style.display = "none";
         resultGroup.style.display = "none";
@@ -254,7 +196,7 @@ html
 
               resultGroup.style.display = "block";
               labelResult.innerHTML = "Hasil encrypt"
-              textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
+              textResult.value = encryptedText.data;
             })
             .catch(function(err) {
               console.error(err);
@@ -273,29 +215,6 @@ html
             })
         }
       });
-
-      buttonDownload.addEventListener("click", function() {
-        var filename = Date.now() + ".txt";
-        var data = textResult.value;
-        var file = new Blob([data], {type: "text/plain"});
-        
-        if (window.navigator.msSaveOrOpenBlob) // IE10+
-            window.navigator.msSaveOrOpenBlob(file, filename);
-        else { // Others
-            var a = document.createElement("a")
-            var url = URL.createObjectURL(file);
-            
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            
-            setTimeout(function() {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);  
-            }, 0); 
-        }
-      })
 
     script(src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous')
     script(src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js' integrity='sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo' crossorigin='anonymous')
