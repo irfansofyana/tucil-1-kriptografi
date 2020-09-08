@@ -1,5 +1,5 @@
 const { div, mod } = require("../helper");
-const K = 3;
+const K = 4;
 
 exports.encrypt = (plaintext) => {
   const output = [];
