@@ -330,7 +330,18 @@ html
                 isValid = false;
               }
             }
-
+          } else if (algoritme[selectedOption] === "affine") {
+            var data = await fetch(`/check/affine/${affineKey1.value}`);
+            var result = await data.json();
+            if (!result.data) {
+              alert.style.display = "block";
+              isValid = false;
+            }
+          } else if (algoritme[selectedOption] === "enigma") {
+            if (key.value.length != 3) {
+              isValid = false;
+              alert.style.display = "block";
+            } 
           }
         } catch (err) {
           isValid = false;
