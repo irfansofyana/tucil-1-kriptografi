@@ -86,7 +86,7 @@ exports.checkRelativePrime = (key) => {
   const matrixKey = generateKeyMatrix(key);
   const determinan = Math.round(det(matrixKey));
 
-  if (gcd(determinan, 26) == 1) {
+  if (gcd(mod(determinan, 26), 26) == 1) {
     return true;
   } else {
     return false;
