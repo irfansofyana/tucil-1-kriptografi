@@ -324,7 +324,6 @@ html
           isValid = false;
         }
 
-
          if (isEncrypt && isValid) {
             var data = {
               text: plaintext.value,
@@ -363,9 +362,9 @@ html
               })
         } else if (!isEncrypt && isValid) {
             var data = {
-              text: plaintext.value,
+              text: ciphertext.value,
             }
-            
+
             if (algoritme[selectedOption] === 'affine') {
               data = {
                 ...data,

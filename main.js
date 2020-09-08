@@ -74,7 +74,9 @@ app.post("/encrypt/:algoritme", function (req, res) {
     var key1 = req.body.key1;
     var key2 = req.body.key2;
   } else {
-    var key = req.body.key;
+    var key =  ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+    ? textToIntList(req.body.key)
+    : req.body.key;
   }
 
   switch (algoritme) {
@@ -120,7 +122,9 @@ app.post("/decrypt/:algoritme", function (req, res) {
     var key1 = req.body.key1;
     var key2 = req.body.key2;
   } else {
-    var key = req.body.key;
+    var key =  ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+    ? textToIntList(req.body.key)
+    : req.body.key;
   }
 
   switch (algoritme) {
