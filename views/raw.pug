@@ -318,7 +318,13 @@ html
                 isValid = false;
               }
             }
-
+          } else if (algoritme[selectedOption] === "affine") {
+            var data = await fetch(`/check/affine/${affineKey1.value}`);
+            var result = await data.json();
+            if (!result.data) {
+              alert.style.display = "block";
+              isValid = false;
+            }
           }
         } catch (err) {
           isValid = false;

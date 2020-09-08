@@ -18,6 +18,7 @@ const { intListToText, textToIntList } = require("./cipher/helper");
 
 const matrixFullVigenere = require("./cipher/varian_vigenere/helper").generateMatrix();
 const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
+const affineHelper = require("./cipher/affine/helper");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -51,6 +52,12 @@ app.get("/check/hill/:key", function (req, res) {
   res.send({
     data: hill.checkRelativePrime(textToIntList(req.params.key)),
   });
+});
+
+app.get("/check/affine/:key1", function(req, res){
+  res.send({
+    data: (affineHelper.gcd(parseInt(req.params.key1), 26) === 1)
+  })
 });
 
 app.post("/encrypt/:algoritme", function (req, res) {
