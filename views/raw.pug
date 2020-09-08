@@ -65,9 +65,17 @@ html
             .alert.alert-danger.fade.show(role='alert')
               strong Key is not valid
             
-            .form-group
+            .form-group#key-primary
               label(for='key') Key
               textarea#key.form-control(rows='1')
+
+            .form-group#key-form-affine-1
+              label(for='key-affine-1') Key 1
+              textarea#affine-key-1.form-control(rows='1')
+
+            .form-group#key-form-affine-2
+              label(for='key-affine-2') Key 2
+              textarea#affine-key-2.form-control(rows='1')
 
             .spasi-cipher-group.mb-3
               .form-check.form-check-inline
@@ -97,6 +105,11 @@ html
       var key = document.querySelector("#key");
       var resultGroup = document.querySelector("#result-group");
       var labelResult = document.querySelector("#label-result");
+      var keyPrimary = document.querySelector("#key-primary");
+      var affineKey1Group = document.querySelector("#key-form-affine-1");
+      var affineKey2Group = document.querySelector("#key-form-affine-2");
+      var affineKey1 = document.querySelector("#key-form-affine-1 #affine-key-1");
+      var affineKey2 = document.querySelector("#key-form-affine-2 #affine-key-2");
       var textResult = document.querySelector("#result-group #result-text");
       var alert = document.querySelector(".alert");
       var inputFileLabel = document.querySelector("#input-file-label");
@@ -114,6 +127,8 @@ html
       alert.style.display = "none";
       ciphertextGroup.style.display = "none";
       fileMethodGroup.style.display = "none";
+      affineKey1Group.style.display = "none";
+      affineKey2Group.style.display = "none";
       
       document.querySelector("#encrypt-radio").addEventListener("change", function() {
         isEncrypt = true;
@@ -183,11 +198,29 @@ html
 
       document.querySelector("select").addEventListener("change", function() {
         selectedOption = getSelectedOptions(select).text;
-        if (algoritme[selectedOption] == "extended") fileMethodGroup.style.display = "block";
+        if (algoritme[selectedOption] === "extended") {
+          fileMethodGroup.style.display = "block";
+          affineKey1Group.style.display = "none";
+          affineKey2Group.style.display = "none";
+        } else if (algoritme[selectedOption] === "affine") {
+          affineKey1Group.style.display = "block";
+          affineKey2Group.style.display = "block";
+          keyPrimary.style.display = "none";
+          affineKey1.value = "";
+          affineKey2.value = "";
+        } else {
+          affineKey1Group.style.display = "none";
+          affineKey2Group.style.display = "none";
+          keyPrimary.style.display = "block";
+        }
       });
 
       function alphabetOnly(text) {
         return text.replace(/[^a-zA-Z]+/g, '')
+      }
+
+      function numberOnly(text) {
+        return text.replace(/[^0-9]+/g, '');
       }
 
       function groupingText(text) {
@@ -256,6 +289,14 @@ html
       key.addEventListener("input", function() {
         key.value = alphabetOnly(key.value.toLowerCase());
       })
+
+      document.querySelector("#affine-key-1").addEventListener("input", function() {
+        affineKey1.value = numberOnly(affineKey1.value);
+      });
+
+      document.querySelector("#affine-key-2").addEventListener("input", function(){
+        affineKey2.value = numberOnly(affineKey2.value);
+      });
 
       buttonProcess.addEventListener("click", async function(event) {
         event.preventDefault();
