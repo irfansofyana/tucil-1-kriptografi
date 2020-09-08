@@ -3,54 +3,66 @@ html
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
     link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous')
-    title Hello, world!
+    title Traditional Cipher
   
   body
     .container
-      form
-        .form-group
-          label(for='algoritme') Pilih jenis cipher
-          select#algoritme.form-control
-            option Simple Vigenere Cipher
-            option Extended Vigenere Cipher
-            option Full Vigenere Cipher
-            option Auto-key Vigenere Cipher
-            option Super Cipher
-            option Playfair Cipher
-            option Hill Cipher
-            option Affine Cipher
-            option Enigma Cipher
+      .card.mt-4
+        .card-header
+          ul.nav.nav-tabs.card-header-tabs
+            li.nav-item
+              a.nav-link.active(href='/') Raw input
+            li.nav-item
+              a.nav-link(href='/file') File input
 
-        .form-check
-          input#encrypt-radio.form-check-input(type='radio' name='radio' value='encrypt' checked='')
-          label.form-check-label(for='encrypt-radio')
-            | Encrypt
+        .card-body
+          form
+            .form-group
+              label(for='algoritme') Pilih jenis cipher
+              select#algoritme.form-control
+                option Simple Vigenere Cipher
+                option Extended Vigenere Cipher
+                option Full Vigenere Cipher
+                option Auto-key Vigenere Cipher
+                option Super Cipher
+                option Playfair Cipher
+                option Hill Cipher
+                option Affine Cipher
+                option Enigma Cipher
 
-        .form-check
-          input#decrypt-radio.form-check-input(type='radio' name='radio' value='decrypt')
-          label.form-check-label(for='decrypt-radio')
-            | Decrypt 
-        
-        .form-group#plaintext-group
-          label(for='plaintext') Plaintext
-          textarea#plaintext.form-control(rows='2')
-        
-        .form-group#ciphertext-group
-          label(for='ciphertext') Ciphertext
-          textarea#ciphertext.form-control(rows='2')
-        
-        .alert.alert-danger(role="alert")
-          | Key is not valid
 
-        .form-group
-          label(for='key') Key
-          textarea#key.form-control(rows='1')
+            .form-check
+              input#encrypt-radio.form-check-input(type='radio' name='radio' value='encrypt' checked='')
+              label.form-check-label(for='encrypt-radio')
+                | Encrypt
 
-        button.btn.btn-success Process
+            .form-check
+              input#decrypt-radio.form-check-input(type='radio' name='radio' value='decrypt')
+              label.form-check-label(for='decrypt-radio')
+                | Decrypt 
+            
+            .form-group.mt-3#plaintext-group
+              label(for='plaintext') Plaintext
+              textarea#plaintext.form-control(rows='2')
+            
+            .form-group.mt-3#ciphertext-group
+              label(for='ciphertext') Ciphertext
+              textarea#ciphertext.form-control(rows='2')
+            
+            .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+              strong Key is not valid
+              button.close(type='button', data-dismiss='alert', aria-label='Close')
+                span(aria-hidden='true') ×
+            
+            .form-group
+              label(for='key') Key
+              textarea#key.form-control(rows='1')
 
-        .form-group#result-group
-          label#label-result(for='result-text')
-          textarea#result-text.form-control(rows='2')
+            button.btn.btn-success Process
+
+            .form-group.mt-3#result-group
+              label#label-result(for='result-text')
+              textarea#result-text.form-control(rows='2')
 
     script(type='text/javascript').
       var plaintextGroup = document.querySelector("#plaintext-group");
@@ -58,26 +70,35 @@ html
       var plaintext = document.querySelector("#plaintext");
       var ciphertext = document.querySelector("#ciphertext");
       var key = document.querySelector("#key");
-
       var resultGroup = document.querySelector("#result-group");
       var labelResult = document.querySelector("#label-result");
       var textResult = document.querySelector("#result-group #result-text");
+      var alert = document.querySelector(".alert");
+
       var isEncrypt = true;
 
       resultGroup.style.display = "none";
       ciphertextGroup.style.display = "none";
-      document.querySelector(".alert").style.display = "none";
+      alert.style.display = "none";
       
       document.querySelector("#encrypt-radio").addEventListener("change", function() {
         isEncrypt = true;
+        
         plaintextGroup.style.display = "block";
         ciphertextGroup.style.display = "none";
+        
+        plaintext.value = ""
+        ciphertext.value = ""
       });
 
       document.querySelector("#decrypt-radio").addEventListener("change", function() {
         isEncrypt = false;
+        
         plaintextGroup.style.display = "none";
         ciphertextGroup.style.display = "block";
+
+        plaintext.value = ""
+        ciphertext.value = ""
       });
 
       function getSelectedOptions(select) {
@@ -121,26 +142,29 @@ html
         }
       })
 
-      document.querySelector(".btn").addEventListener("click", function(event) {
+      document.querySelector(".btn").addEventListener("click", async function(event) {
         event.preventDefault();
+        alert.style.display = "none";
 
         var isValid = true;
-
-        if (algoritme[selectedOption] == "hill") {
-          document.querySelector(".alert").style.display = "none";
-
-          fetch(`/check/hill/${key.value}`)
-            .then(async function(data) {
-              const result = await data.json();
+        
+        try {
+          if (algoritme[selectedOption] == "hill") {
+            if (key.value.length != 9) {
+              isValid = false;
+              alert.style.display = "block";
+            } else {
+              var data = await fetch(`/check/hill/${key.value}`)
+              var result = await data.json();
               if (!result.data) {
-                isValid = true;
-                document.querySelector(".alert").style.display = "block";
+                alert.style.display = "block";
+                isValid = false;
               }
+            }
 
-            })
-            .catch(function(err) {
-              console.error(err);
-            })
+          }
+        } catch (err) {
+          isValid = false;
         }
 
         if (isEncrypt && isValid) {
