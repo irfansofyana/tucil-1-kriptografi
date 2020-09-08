@@ -11,7 +11,7 @@ class Rotors {
                 this._rotor[i][j] = new Array(26);
                 if (j === 0) {
                     //left part of a rotor
-                    let curr = parseInt(key[i].charCodeAt()-'a'.charCodeAt(), 10);
+                    let curr = parseInt(key[i].charCodeAt()-'a'.charCodeAt(), 10) + 1;
                     for (let k = 0; k < 26; ++k) {
                         if (curr == 27) curr = 1;
                         this._rotor[i][j][k] = curr;
@@ -33,13 +33,13 @@ class Rotors {
         return this._rotor;
     }
 
-    setRotorConfig(key, config) {
+    setRotorConfigFromUser(key, config) {
         for (let i = 0; i < 3; ++i) {
             for (let j = 0; j < 2; ++j) {
                 let curr = (
                     j === 0 ? 
-                        parseInt(key[i].charCodeAt() - 'a'.charCodeAt(), 10) : 
-                        parseInt(config[i].charCodeAt() - 'a'.charCodeAt(), 10)
+                        parseInt(key[i].charCodeAt() - 'a'.charCodeAt(), 10) + 1 : 
+                        parseInt(config[i].charCodeAt() - 'a'.charCodeAt(), 10) + 1
                 );
 
                 for (let k = 0; k < 26; ++k) {
@@ -49,6 +49,25 @@ class Rotors {
                 }
             }
         }      
+    }
+
+    setRotorConfig(key, config) {
+        for (let i = 0; i < 3; ++i) {
+            for (let j = 0; j < 2; ++j) {
+                if (j === 0) {
+                    //left part of a rotor
+                    let curr = parseInt(key[i].charCodeAt()-'a'.charCodeAt(), 10) + 1;
+                    for (let k = 0; k < 26; ++k) {
+                        if (curr == 27) curr = 1;
+                        this._rotor[i][j][k] = curr;
+                        curr++;
+                    }
+                } else {
+                    // right part of a rotor
+                    this._rotor[i][j] = config[i];
+                }
+            } 
+        }   
     }
 
     forwardRotor(indexRotor) {
@@ -72,7 +91,7 @@ class Rotors {
 
     findEncryptedChar(char) {
         if (char < 'a' || char > 'z') return char;
- 
+
         let leftPointer = this._rotor[0][0][char.charCodeAt() - 'a'.charCodeAt()];
         let rightPointer = 0;
 

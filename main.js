@@ -15,6 +15,7 @@ const fullVigenere = require("./cipher/varian_vigenere/full_vigenere");
 const { intListToText, textToIntList } = require("./cipher/helper");
 
 const matrixFullVigenere = require("./cipher/varian_vigenere/helper").generateMatrix();
+const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
 
 app.set("view engine", "pug");
 
@@ -68,7 +69,7 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
       // TO DO
       break;
     case "enigma":
-      // TO DO
+      sendData(res, enigma.encrypt(text, key, rotorsConfig), false);
       break;
     case "full":
       sendData(res, fullVigenere.encrypt(text, key, matrixFullVigenere), false);
@@ -113,6 +114,7 @@ app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
     case "affine":
       break;
     case "enigma":
+      sendData(res, enigma.decrypt(text, key, rotorsConfig), false);
       break;
     case "full":
       sendData(res, fullVigenere.decrypt(text, key, matrixFullVigenere), false);

@@ -11,6 +11,16 @@ const randomAlphabetOrder = () => {
     return arrayCopy;
 }
 
+const randomConfig = () => {
+    let config = [];
+
+    for (let i = 0; i < 3; ++i) {
+        config.push(randomAlphabetOrder());
+    }
+
+    return config;
+}
+
 const findPosition = (array, number) => {
     for (let i = 0; i < array.length; ++i) {
         if (array[i] === number) {
@@ -21,5 +31,6 @@ const findPosition = (array, number) => {
 
 module.exports = {
     randomAlphabetOrder,
-    findPosition
+    findPosition,
+    randomConfig
 }
