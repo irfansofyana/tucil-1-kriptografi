@@ -3,7 +3,7 @@ const transpose = require("../transposition");
 
 exports.encrypt = (plaintext, key) => {
   const output = vigenere.encrypt(plaintext, key);
-  return transpose.decrypt(output);
+  return transpose.encrypt(output);
 };
 
 exports.decrypt = (cipher, key) => {

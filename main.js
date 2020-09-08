@@ -20,12 +20,16 @@ const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
 app.set("view engine", "pug");
 
 app.get("/", function (req, res) {
-  res.render("index", { title: "Hey", message: "Hello there!" });
+  res.render("raw", { title: "Hey" });
+});
+
+app.get("/file", function (req, res) {
+  res.render("raw", { title: "Hey" });
 });
 
 const sendData = (res, data, needCasting) => {
   return res.send({
-    data: (needCasting ? intListToText(data) : data)
+    data: needCasting ? intListToText(data) : data,
   });
 };
 
@@ -38,16 +42,12 @@ app.get("/check/hill/:key", function (req, res) {
 app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
   const { algoritme } = req.params;
 
-  const text = (
-    ["vigenere", "super", "hill", "playfair"].includes(algoritme) ? 
-    textToIntList(req.params.text) :
-    req.params.text
-  );
-  const key = (
-    ["vigenere", "super", "hill", "playfair"].includes(algoritme) ? 
-    textToIntList(req.params.key) :
-    req.params.key
-  );
+  const text = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+    ? textToIntList(req.params.text)
+    : req.params.text;
+  const key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+    ? textToIntList(req.params.key)
+    : req.params.key;
 
   switch (algoritme) {
     case "vigenere":
@@ -85,16 +85,12 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
 app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
   const { algoritme } = req.params;
 
-  const text = (
-    ["vigenere", "super", "hill", "playfair"].includes(algoritme) ? 
-    textToIntList(req.params.text) :
-    req.params.text
-  );
-  const key = (
-    ["vigenere", "super", "hill", "playfair"].includes(algoritme) ? 
-    textToIntList(req.params.key) :
-    req.params.key
-  );
+  const text = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+    ? textToIntList(req.params.text)
+    : req.params.text;
+  const key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
+    ? textToIntList(req.params.key)
+    : req.params.key;
 
   switch (algoritme) {
     case "vigenere":
