@@ -20,9 +20,7 @@ exports.encrypt = (plaintext, key) => {
 exports.decrypt = (cipher, key) => {
   const output = [];
 
-  console.log(cipher);
   var ct = Object.values(cipher);
-  console.log(ct);
   const kt = textToIntList(key);
 
   for (let i = 0; i < ct.length; i++) {
