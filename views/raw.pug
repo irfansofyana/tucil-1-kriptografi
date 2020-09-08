@@ -120,6 +120,7 @@ html
       var buttonDownload = document.querySelector("#btn-download")
 
       var isEncrypt = true;
+      var fileValue = true;
       var withSpasi = false;
 
       resultGroup.style.display = "none";
@@ -158,6 +159,17 @@ html
 
       document.querySelector("#no-spasi-radio").addEventListener("change", function() {
         withSpasi = false;
+      });
+
+      document.querySelector("#value-radio").addEventListener("change", function() {
+        fileValue = true;
+      });
+
+      document.querySelector("#byte-radio").addEventListener("change", function() {
+        fileValue = false;
+        plaintextGroup.style.display = "none";
+        ciphertextGroup.style.display = "none";
+        spasiCipherGroup.style.display = "none";
       });
 
       function getSelectedOptions(select) {
@@ -224,16 +236,40 @@ html
       document.querySelector('#inputPlaintextFile').addEventListener('input', function(evt) {
         var files = evt.target.files;
         var file = files[0];
-        console.log(file)
+
         inputFileLabel.innerHTML = file.name;
 
         var reader = new FileReader();
-        reader.onload = function(event) {
-          if (isEncrypt) plaintext.value = alphabetOnly(event.target.result.toLowerCase());            
-          else ciphertext.value = alphabetOnly(event.target.result.toUpperCase());
+
+        if (fileValue) {
+          reader.onload = function(event) {
+            if (isEncrypt) plaintext.value = alphabetOnly(event.target.result.toLowerCase());            
+            else ciphertext.value = alphabetOnly(event.target.result.toUpperCase());
+          }
+          
+          reader.readAsText(file)
+        } else {
+          var fileByteArray = [];
+          var output = "";
+
+          reader.readAsArrayBuffer(file);
+          reader.onloadend = function (evt) {
+            if (evt.target.readyState == FileReader.DONE) {
+              var arrayBuffer = evt.target.result;
+              var array = new Uint8Array(arrayBuffer);
+
+              for (var i = 0; i < array.length; i++) {
+                fileByteArray.push(array[i]);
+                output += String.fromCharCode(array[i])
+              }
+
+              console.log(output)
+
+              if (isEncrypt) plaintext.value = output;            
+              else ciphertext.value = output;
+            }
+          }
         }
-        
-        reader.readAsText(file)
       }, false);
       
       plaintext.addEventListener("input", function() {
@@ -288,38 +324,71 @@ html
           isValid = false;
         }
 
-        if (isEncrypt && isValid) {
-          if (algoritme[selectedOption] === "affine") {
-            fetch(`/encrypt/affine/${plaintext.value}/${affineKey1.value}/${affineKey2.value}`)
-            .then(async function(data) {
-              var encryptedText = await data.json();
 
-              resultGroup.style.display = "block";
-              labelResult.innerHTML = "Hasil encrypt"
-              textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
-            })
-            .catch(function(err) {
-              console.error(err);
-            })
-          }
-          else {
-            fetch(`/encrypt/${algoritme[selectedOption]}/${plaintext.value}/${key.value}`)
-            .then(async function(data) {
-              var encryptedText = await data.json();
+         if (isEncrypt && isValid) {
+            var data = {
+              text: plaintext.value,
+            }
 
-              resultGroup.style.display = "block";
-              labelResult.innerHTML = "Hasil encrypt"
-              textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
+            if (algoritme[selectedOption] === 'affine') {
+              data = {
+                ...data,
+                key1: affineKey1.value,
+                key2: affineKey2.value
+              }
+            } else {
+              data = {
+                ...data,
+                key: key.value
+              }
+            }
+
+            fetch(`/encrypt/${algoritme[selectedOption]}`, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
             })
-            .catch(function(err) {
-              console.error(err);
-            })
-          }
+              .then(async function(response) {
+                var encryptedText = await response.json();
+
+                resultGroup.style.display = "block";
+                labelResult.innerHTML = "Hasil encrypt"
+                textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
+              })
+              .catch(function(err) {
+                console.error(err);
+              })
         } else if (!isEncrypt && isValid) {
-          if (algoritme[selectedOption] === "affine") {
-            fetch(`/decrypt/affine/${ciphertext.value}/${affineKey1.value}/${affineKey2.value}`)
-            .then(async function(data) {
-              var decryptedText = await data.json();
+            var data = {
+              text: plaintext.value,
+            }
+            
+            if (algoritme[selectedOption] === 'affine') {
+              data = {
+                ...data,
+                key1: affineKey1.value,
+                key2: affineKey2.value
+              }
+            } else {
+              data = {
+                ...data,
+                key: key.value
+              }
+            }
+
+          fetch(`/decrypt/${algoritme[selectedOption]}`, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+            .then(async function(response) {
+              var decryptedText = await response.json();
 
               resultGroup.style.display = "block";
               labelResult.innerHTML = "Hasil decrypt"
@@ -328,19 +397,6 @@ html
             .catch(function(err) {
               console.error(err);
             })
-          }else {
-            fetch(`/decrypt/${algoritme[selectedOption]}/${ciphertext.value}/${key.value}`)
-            .then(async function(data) {
-              var decryptedText = await data.json();
-
-              resultGroup.style.display = "block";
-              labelResult.innerHTML = "Hasil decrypt"
-              textResult.value = decryptedText.data;
-            })
-            .catch(function(err) {
-              console.error(err);
-            })
-          }
         }
       });
 

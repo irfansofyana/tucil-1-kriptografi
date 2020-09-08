@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 const express = require("express");
 const multer = require("multer");
 const app = express();
@@ -27,6 +28,9 @@ const { intListToText, textToIntList } = require("./cipher/helper");
 
 const matrixFullVigenere = require("./cipher/varian_vigenere/helper").generateMatrix();
 const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "pug");
 
@@ -59,15 +63,19 @@ app.get("/check/hill/:key", function (req, res) {
   });
 });
 
-app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
+app.post("/encrypt/:algoritme", function (req, res) {
   const { algoritme } = req.params;
 
   const text = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.text)
-    : req.params.text;
-  const key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.key)
-    : req.params.key;
+    ? textToIntList(req.body.text)
+    : req.body.text;
+
+  if (algoritme === "affine") {
+    var key1 = req.body.key1;
+    var key2 = req.body.key2;
+  } else {
+    var key = req.body.key;
+  }
 
   switch (algoritme) {
     case "vigenere":
@@ -94,25 +102,26 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
     case "autokey":
       sendData(res, autoKey.encrypt(text, key), false);
       break;
+    case "affine":
+      sendData(res, affine.encrypt(text, key1, key2), false);
     default:
       break;
   }
 });
 
-app.get("/encrypt/affine/:text/:key1/:key2", function(req, res) {
-  const {text, key1, key2} = req.params;
-  sendData(res, affine.encrypt(text, key1, key2));
-});
-
-app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
+app.post("/decrypt/:algoritme", function (req, res) {
   const { algoritme } = req.params;
 
   const text = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.text)
-    : req.params.text;
-  const key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.key)
-    : req.params.key;
+    ? textToIntList(req.body.text)
+    : req.body.text;
+
+  if (algoritme === "affine") {
+    var key1 = req.body.key1;
+    var key2 = req.body.key2;
+  } else {
+    var key = req.body.key;
+  }
 
   switch (algoritme) {
     case "vigenere":
@@ -137,6 +146,9 @@ app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
       break;
     case "autokey":
       sendData(res, autoKey.decrypt(text, key), false);
+      break;
+    case "affine":
+      sendData(res, affine.decrypt(text, key1, key2), false);
       break;
     default:
       break;
