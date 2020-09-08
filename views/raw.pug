@@ -124,7 +124,7 @@ html
       var withSpasi = false;
 
       var file;
-      var testes;
+      var dataExtended;
 
       resultGroup.style.display = "none";
       alert.style.display = "none";
@@ -241,7 +241,7 @@ html
       }
 
       function str2ab(str) {
-        var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+        var buf = new ArrayBuffer(str.length); // 2 bytes for each char
         var bufView = new Uint8Array(buf);
         
         for (var i = 0, strLen = str.length; i < strLen; i++) {
@@ -267,16 +267,21 @@ html
           reader.readAsText(file)
         } else {
           var fileByteArray = [];
+          var output = "";
 
           reader.readAsArrayBuffer(file);
           reader.onloadend = function (evt) {
             if (evt.target.readyState == FileReader.DONE) {
               var arrayBuffer = evt.target.result;
-              console.log(arrayBuffer);
+              var array = new Uint8Array(arrayBuffer);
 
-              
-              var output = ab2str(arrayBuffer);
-              console.log(output);
+              for (var i = 0; i < array.length; i++) {
+                fileByteArray.push(array[i]);
+                output += String.fromCharCode(array[i])
+              }
+
+              dataExtended = array;
+
               if (isEncrypt) plaintext.value = output;            
               else ciphertext.value = output;
             }
@@ -352,6 +357,10 @@ html
               text: plaintext.value,
             }
 
+            if (algoritme[selectedOption] === 'extended') {
+              data.text = dataExtended
+            }
+
             if (algoritme[selectedOption] === 'affine') {
               data = {
                 ...data,
@@ -381,7 +390,7 @@ html
                   labelResult.innerHTML = "Hasil encrypt"
                   textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
                 } else {
-                  downloadFile(file.name, [str2ab(encryptedText.data)], 'octet/stream')
+                  downloadFile(file.name, [ str2ab(encryptedText.data) ], 'octet/stream')
                 }
               })
               .catch(function(err) {
@@ -390,6 +399,10 @@ html
         } else if (!isEncrypt && isValid) {
             var data = {
               text: ciphertext.value,
+            }
+
+            if (algoritme[selectedOption] === 'extended') {
+              data.text = dataExtended
             }
 
             if (algoritme[selectedOption] === 'affine') {
@@ -421,7 +434,7 @@ html
                 labelResult.innerHTML = "Hasil decrypt"
                 textResult.value = decryptedText.data;
               } else {
-                downloadFile(file.name, [str2ab(decryptedText.data)], 'octet/stream')
+                downloadFile(file.name, [ str2ab(decryptedText.data) ], 'octet/stream')
               }
             })
             .catch(function(err) {
@@ -433,7 +446,6 @@ html
       function downloadFile(filename, data, type) {
         var file = new Blob(data, { type });
 
-        console.log(data)
         if (window.navigator.msSaveOrOpenBlob) // IE10+
           window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
