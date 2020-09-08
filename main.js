@@ -20,8 +20,8 @@ const matrixFullVigenere = require("./cipher/varian_vigenere/helper").generateMa
 const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
 const affineHelper = require("./cipher/affine/helper");
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "5mb" }));
+app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
 
 app.set("view engine", "pug");
 
@@ -54,10 +54,10 @@ app.get("/check/hill/:key", function (req, res) {
   });
 });
 
-app.get("/check/affine/:key1", function(req, res){
+app.get("/check/affine/:key1", function (req, res) {
   res.send({
-    data: (affineHelper.gcd(parseInt(req.params.key1), 26) === 1)
-  })
+    data: affineHelper.gcd(parseInt(req.params.key1), 26) === 1,
+  });
 });
 
 app.post("/encrypt/:algoritme", function (req, res) {
