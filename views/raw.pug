@@ -390,9 +390,6 @@ html
                   labelResult.innerHTML = "Hasil encrypt"
                   textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
                 } else {
-                  //- console.log("SEBELUM ENCRYPT", data.text)
-                  //- console.log("SETELAH ENCRYPT", encryptedText.data)
-
                   downloadFile(file.name, [ str2ab(encryptedText.data) ], 'octet/stream')
                 }
               })
@@ -437,9 +434,6 @@ html
                 labelResult.innerHTML = "Hasil decrypt"
                 textResult.value = decryptedText.data;
               } else {
-                //- console.log("SEBELUM DECRYPT", data.text)
-                console.log("SETELAH DECRYPT", decryptedText.data)
-
                 downloadFile(file.name, [ str2ab(decryptedText.data) ], 'octet/stream')
               }
             })
@@ -452,7 +446,6 @@ html
       function downloadFile(filename, data, type) {
         var file = new Blob(data, { type });
 
-        console.log(data)
         if (window.navigator.msSaveOrOpenBlob) // IE10+
           window.navigator.msSaveOrOpenBlob(file, filename);
         else { // Others
