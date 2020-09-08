@@ -267,16 +267,21 @@ html
           reader.readAsText(file)
         } else {
           var fileByteArray = [];
+          var output = "";
 
           reader.readAsArrayBuffer(file);
           reader.onloadend = function (evt) {
             if (evt.target.readyState == FileReader.DONE) {
               var arrayBuffer = evt.target.result;
-              console.log(arrayBuffer);
+              var array = new Uint8Array(arrayBuffer);
 
-              
-              var output = ab2str(arrayBuffer);
-              console.log(output);
+              for (var i = 0; i < array.length; i++) {
+                fileByteArray.push(array[i]);
+                output += String.fromCharCode(array[i])
+              }
+
+              console.log(output)
+
               if (isEncrypt) plaintext.value = output;            
               else ciphertext.value = output;
             }
@@ -381,7 +386,7 @@ html
                   labelResult.innerHTML = "Hasil encrypt"
                   textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
                 } else {
-                  downloadFile(file.name, [str2ab(encryptedText.data)], 'octet/stream')
+                  downloadFile(file.name, [ str2ab(encryptedText.data) ], 'octet/stream')
                 }
               })
               .catch(function(err) {
@@ -421,7 +426,7 @@ html
                 labelResult.innerHTML = "Hasil decrypt"
                 textResult.value = decryptedText.data;
               } else {
-                downloadFile(file.name, [str2ab(decryptedText.data)], 'octet/stream')
+                downloadFile(file.name, [ str2ab(decryptedText.data) ], 'octet/stream')
               }
             })
             .catch(function(err) {
