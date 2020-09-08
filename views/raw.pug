@@ -107,6 +107,7 @@ html
       var buttonDownload = document.querySelector("#btn-download")
 
       var isEncrypt = true;
+      var fileValue = true;
       var withSpasi = false;
 
       resultGroup.style.display = "none";
@@ -143,6 +144,17 @@ html
 
       document.querySelector("#no-spasi-radio").addEventListener("change", function() {
         withSpasi = false;
+      });
+
+      document.querySelector("#value-radio").addEventListener("change", function() {
+        fileValue = true;
+      });
+
+      document.querySelector("#byte-radio").addEventListener("change", function() {
+        fileValue = false;
+        plaintextGroup.style.display = "none";
+        ciphertextGroup.style.display = "none";
+        spasiCipherGroup.style.display = "none";
       });
 
       function getSelectedOptions(select) {
@@ -191,16 +203,38 @@ html
       document.querySelector('#inputPlaintextFile').addEventListener('input', function(evt) {
         var files = evt.target.files;
         var file = files[0];
-        console.log(file)
+
         inputFileLabel.innerHTML = file.name;
 
         var reader = new FileReader();
-        reader.onload = function(event) {
-          if (isEncrypt) plaintext.value = alphabetOnly(event.target.result.toLowerCase());            
-          else ciphertext.value = alphabetOnly(event.target.result.toUpperCase());
+
+        if (fileValue) {
+          reader.onload = function(event) {
+            if (isEncrypt) plaintext.value = alphabetOnly(event.target.result.toLowerCase());            
+            else ciphertext.value = alphabetOnly(event.target.result.toUpperCase());
+          }
+          
+          reader.readAsText(file)
+        } else {
+          var fileByteArray = [];
+          var output = "";
+
+          reader.readAsArrayBuffer(file);
+          reader.onloadend = function (evt) {
+            if (evt.target.readyState == FileReader.DONE) {
+              var arrayBuffer = evt.target.result;
+              var array = new Uint8Array(arrayBuffer);
+
+              for (var i = 0; i < array.length; i++) {
+                fileByteArray.push(array[i]);
+                output += String.fromCharCode(array[i])
+              }
+
+              if (isEncrypt) plaintext.value = output;            
+              else ciphertext.value = output;
+            }
+          }
         }
-        
-        reader.readAsText(file)
       }, false);
       
       plaintext.addEventListener("input", function() {
@@ -247,10 +281,23 @@ html
           isValid = false;
         }
 
+
         if (isEncrypt && isValid) {
-          fetch(`/encrypt/${algoritme[selectedOption]}/${plaintext.value}/${key.value}`)
-            .then(async function(data) {
-              var encryptedText = await data.json();
+          var data = {
+            text: plaintext.value,
+            key: key.value
+          }
+
+          fetch(`/encrypt/${algoritme[selectedOption]}`, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+            .then(async function(response) {
+              var encryptedText = await response.json();
 
               resultGroup.style.display = "block";
               labelResult.innerHTML = "Hasil encrypt"
@@ -260,9 +307,21 @@ html
               console.error(err);
             })
         } else if (!isEncrypt && isValid) {
-          fetch(`/decrypt/${algoritme[selectedOption]}/${ciphertext.value}/${key.value}`)
-            .then(async function(data) {
-              var decryptedText = await data.json();
+          var data = {
+            text: ciphertext.value,
+            key: key.value
+          }
+
+          fetch(`/decrypt/${algoritme[selectedOption]}`, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+            .then(async function(response) {
+              var decryptedText = await response.json();
 
               resultGroup.style.display = "block";
               labelResult.innerHTML = "Hasil decrypt"

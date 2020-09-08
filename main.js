@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 const express = require("express");
 const multer = require("multer");
 const app = express();
@@ -27,6 +28,9 @@ const { intListToText, textToIntList } = require("./cipher/helper");
 
 const matrixFullVigenere = require("./cipher/varian_vigenere/helper").generateMatrix();
 const rotorsConfig = require("./cipher/enigma/helper").randomConfig();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "pug");
 
@@ -59,15 +63,15 @@ app.get("/check/hill/:key", function (req, res) {
   });
 });
 
-app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
+app.post("/encrypt/:algoritme", function (req, res) {
   const { algoritme } = req.params;
 
   const text = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.text)
-    : req.params.text;
+    ? textToIntList(req.body.text)
+    : req.body.text;
   const key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.key)
-    : req.params.key;
+    ? textToIntList(req.body.key)
+    : req.body.key;
 
   switch (algoritme) {
     case "vigenere":
@@ -102,15 +106,15 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
   }
 });
 
-app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
+app.post("/decrypt/:algoritme/:text/:key", function (req, res) {
   const { algoritme } = req.params;
 
   const text = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.text)
-    : req.params.text;
+    ? textToIntList(req.body.text)
+    : req.body.text;
   const key = ["vigenere", "super", "hill", "playfair"].includes(algoritme)
-    ? textToIntList(req.params.key)
-    : req.params.key;
+    ? textToIntList(req.body.key)
+    : req.body.key;
 
   switch (algoritme) {
     case "vigenere":
