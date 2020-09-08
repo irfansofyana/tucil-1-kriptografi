@@ -157,11 +157,6 @@ app.post("/decrypt/:algoritme", function (req, res) {
   }
 });
 
-app.get("/decrypt/affine/:text/:key1/:key2", function (req, res) {
-  const { text, key1, key2 } = req.params;
-  sendData(res, affine.decrypt(text, key1, key2));
-});
-
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
