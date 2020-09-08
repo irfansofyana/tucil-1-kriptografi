@@ -49,10 +49,8 @@ html
               label(for='ciphertext') Ciphertext
               textarea#ciphertext.form-control(rows='2')
             
-            .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+            .alert.alert-danger.fade.show(role='alert')
               strong Key is not valid
-              button.close(type='button', data-dismiss='alert', aria-label='Close')
-                span(aria-hidden='true') ×
             
             .form-group
               label(for='key') Key
@@ -142,9 +140,14 @@ html
         }
       })
 
+      document.querySelector("#key").addEventListener("input", function() {
+        key.value = alphabetOnly(key.value.toLowerCase());
+      })
+
       document.querySelector(".btn").addEventListener("click", async function(event) {
         event.preventDefault();
         alert.style.display = "none";
+        resultGroup.style.display = "none";
 
         var isValid = true;
         
@@ -174,7 +177,7 @@ html
 
               resultGroup.style.display = "block";
               labelResult.innerHTML = "Hasil encrypt"
-              textResult.innerHTML = encryptedText.data;
+              textResult.value = encryptedText.data;
             })
             .catch(function(err) {
               console.error(err);
@@ -186,7 +189,7 @@ html
 
               resultGroup.style.display = "block";
               labelResult.innerHTML = "Hasil decrypt"
-              textResult.innerHTML = decryptedText.data;
+              textResult.value = decryptedText.data;
             })
             .catch(function(err) {
               console.error(err);

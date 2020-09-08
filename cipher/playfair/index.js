@@ -2,7 +2,7 @@ const { textToIntList, toLowerCase } = require("../helper");
 
 const CODE_I = 105;
 const CODE_J = 106;
-const CODE_X = 118;
+const CODE_X = 120;
 
 const arrayToMatrix = (array) => {
   const matrix = [];
