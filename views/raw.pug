@@ -289,7 +289,8 @@ html
         }
 
         if (isEncrypt && isValid) {
-          fetch(`/encrypt/${algoritme[selectedOption]}/${plaintext.value}/${key.value}`)
+          if (algoritme[selectedOption] === "affine") {
+            fetch(`/encrypt/affine/${plaintext.value}/${affineKey1.value}/${affineKey2.value}`)
             .then(async function(data) {
               var encryptedText = await data.json();
 
@@ -300,8 +301,23 @@ html
             .catch(function(err) {
               console.error(err);
             })
+          }
+          else {
+            fetch(`/encrypt/${algoritme[selectedOption]}/${plaintext.value}/${key.value}`)
+            .then(async function(data) {
+              var encryptedText = await data.json();
+
+              resultGroup.style.display = "block";
+              labelResult.innerHTML = "Hasil encrypt"
+              textResult.value = !withSpasi ? encryptedText.data : groupingText(encryptedText.data);
+            })
+            .catch(function(err) {
+              console.error(err);
+            })
+          }
         } else if (!isEncrypt && isValid) {
-          fetch(`/decrypt/${algoritme[selectedOption]}/${ciphertext.value}/${key.value}`)
+          if (algoritme[selectedOption] === "affine") {
+            fetch(`/decrypt/affine/${ciphertext.value}/${affineKey1.value}/${affineKey2.value}`)
             .then(async function(data) {
               var decryptedText = await data.json();
 
@@ -312,6 +328,19 @@ html
             .catch(function(err) {
               console.error(err);
             })
+          }else {
+            fetch(`/decrypt/${algoritme[selectedOption]}/${ciphertext.value}/${key.value}`)
+            .then(async function(data) {
+              var decryptedText = await data.json();
+
+              resultGroup.style.display = "block";
+              labelResult.innerHTML = "Hasil decrypt"
+              textResult.value = decryptedText.data;
+            })
+            .catch(function(err) {
+              console.error(err);
+            })
+          }
         }
       });
 

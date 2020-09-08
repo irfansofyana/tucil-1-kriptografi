@@ -1,6 +1,6 @@
 const helper = require('./helper');
 
-const MAX_BLOCK = 52;
+const MAX_BLOCK = 26;
 
 const encrypt = (plaintext, keyM, keyB) => {
     if (helper.gcd(keyM, MAX_BLOCK) != 1) {
@@ -18,11 +18,10 @@ const encrypt = (plaintext, keyM, keyB) => {
             ),
             keyB,
             MAX_BLOCK
-        ).toString();
-    
-        resultEncrypt = resultEncrypt + helper.numToWord(encryptNum);
-    } 
+        );
 
+        resultEncrypt = resultEncrypt + helper.numToWord(encryptNum).toUpperCase();
+    } 
     return resultEncrypt;
 }
 
@@ -37,7 +36,7 @@ const decrypt = (cipher, keyM, keyB) => {
             helper.inverse(keyM, MAX_BLOCK),
             helper.minus(parseInt(helper.wordToNum(cipher[i])), keyB, MAX_BLOCK),
             MAX_BLOCK
-        ).toString();
+        );
         
         resultDecrypt = resultDecrypt + helper.numToWord(decryptNum);
     }

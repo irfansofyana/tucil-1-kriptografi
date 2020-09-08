@@ -85,9 +85,6 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
     case "extended":
       sendData(res, extended.encrypt(text, key), false);
       break;
-    case "affine":
-      // TO DO
-      break;
     case "enigma":
       sendData(res, enigma.encrypt(text, key, rotorsConfig), false);
       break;
@@ -100,6 +97,11 @@ app.get("/encrypt/:algoritme/:text/:key", function (req, res) {
     default:
       break;
   }
+});
+
+app.get("/encrypt/affine/:text/:key1/:key2", function(req, res) {
+  const {text, key1, key2} = req.params;
+  sendData(res, affine.encrypt(text, key1, key2));
 });
 
 app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
@@ -127,8 +129,6 @@ app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
       break;
     case "extended":
       sendData(res, extended.decrypt(text, key), false);
-    case "affine":
-      break;
     case "enigma":
       sendData(res, enigma.decrypt(text, key, rotorsConfig), false);
       break;
@@ -141,6 +141,11 @@ app.get("/decrypt/:algoritme/:text/:key", function (req, res) {
     default:
       break;
   }
+});
+
+app.get("/decrypt/affine/:text/:key1/:key2", function(req, res) {
+  const {text, key1, key2} = req.params;
+  sendData(res, affine.decrypt(text, key1, key2));
 });
 
 app.listen(port, () => {
