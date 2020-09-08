@@ -1,3 +1,6 @@
+const seedrandom = require('seedrandom');
+const rng = seedrandom('this_is_seed');
+
 const swapString = (string, a, b) => {
     let arrString = string.split('');
     [arrString[a], arrString[b]] = [arrString[b], arrString[a]];
@@ -7,17 +10,17 @@ const swapString = (string, a, b) => {
 const shuffleString = (string) => {
     let array = string;
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng() * (i + 1));
         array = swapString(array, i, j);
     }
     return array;
 }
 
 const randomKey = (plaintext) => {
-    const randomKeyLen = Math.floor(Math.random() * plaintext.length) + 1;
+    const randomKeyLen = Math.floor(rng() * plaintext.length) + 1;
     let key = '';
     for (let i = 0; i< randomKeyLen; ++i) {
-        const randomChar = String.fromCharCode('a'.charCodeAt() + Math.floor(Math.random() * 26));
+        const randomChar = String.fromCharCode('a'.charCodeAt() + Math.floor(rng() * 26));
         key = key + randomChar;
     }
 
