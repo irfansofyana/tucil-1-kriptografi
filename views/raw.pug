@@ -135,9 +135,15 @@ html
       
       document.querySelector("#encrypt-radio").addEventListener("change", function() {
         isEncrypt = true;
-        
-        plaintextGroup.style.display = "block";
         ciphertextGroup.style.display = "none";
+
+        if (!fileValue) {
+          plainextGroup.style.display = "none";
+          spasiCipherGroup.style.display = "none";
+        } else {
+          plaintextGroup.style.display = "block";
+          spasiCipherGroup.style.display = "block";
+        }
         
         plaintext.value = "";
         ciphertext.value = "";
@@ -146,10 +152,14 @@ html
 
       document.querySelector("#decrypt-radio").addEventListener("change", function() {
         isEncrypt = false;
-        
         plaintextGroup.style.display = "none";
-        ciphertextGroup.style.display = "block";
         spasiCipherGroup.style.display = "none";
+
+        if (!fileValue) {
+          ciphertextGroup.style.display = "none";
+        } else {
+          ciphertextGroup.style.display = "block";
+        }
 
         plaintext.value = "";
         ciphertext.value = "";
@@ -166,6 +176,16 @@ html
 
       document.querySelector("#value-radio").addEventListener("change", function() {
         fileValue = true;
+
+        if (!isEncrypt) {
+          plaintextGroup.style.display = "none";
+          ciphertextGroup.style.display = "block";
+          spasiCipherGroup.style.display = "block";
+        } else {
+          plaintextGroup.style.display = "block";
+          ciphertextGroup.style.display = "none";
+          spasiCipherGroup.style.display = "none";
+        }
       });
 
       document.querySelector("#byte-radio").addEventListener("change", function() {
