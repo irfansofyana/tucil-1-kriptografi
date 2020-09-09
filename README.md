@@ -29,7 +29,7 @@ Aplikasi yang kami bangun adalah aplikasi berbasis web. Adapun teknologi yang ka
 
 Untuk menjalankan aplikasi ini, kita harus melakukan instalasi library yang dibutuhkan. Kita dapat melakukannya dengan menjalankan perintah `npm install` pada *root* folder.
 
-Setelah semua library terinstall, kita dapat menjalankan aplikasi ini dengan cara menjalankan perintah `node main.js`. Lalu kita bisa membuka aplikasi ini dengan bantuan browser pada alamat `http://localhost:3000`
+Setelah semua library terinstall, kita dapat menjalankan aplikasi ini dengan cara menjalankan perintah `node main.js` pada *root* folder, lalu kita bisa membuka aplikasi ini dengan bantuan browser pada alamat `http://localhost:3000`
 
 ## Fitur
 
