@@ -13,7 +13,7 @@ Repository ini merupakan repository untuk Tugas Kecil 1 Mata Kuliah IF4020 - Kri
 - Hill Cipher (26 huruf)
 - Enigma Cipher (26 huruf)
 
-Aplikasi yang kami bangun adalah aplikasi berbasis web/ Adapun teknologi yang kami gunakan untuk membangun aplikasi ini adalah bahasa Javascript dengan menggunakan *framework* express.
+Aplikasi yang kami bangun adalah aplikasi berbasis web. Adapun teknologi yang kami gunakan untuk membangun aplikasi ini adalah bahasa Javascript dengan menggunakan *framework* express.
 
 ## Anggota Kelompok
 
@@ -40,7 +40,7 @@ Setelah semua library terinstall, kita dapat menjalankan aplikasi ini dengan car
 ## Screenshot Aplikasi
 
 ### Laman Utama Aplikasi
-![home](img/home.png)
+![home](img/home.PNG)
 
 ### Contoh Penggunaan
-![example](img/example.png)
+![example](img/example.PNG)
