@@ -357,7 +357,7 @@ html
               text: plaintext.value,
             }
 
-            if (algoritme[selectedOption] === 'extended') {
+            if (algoritme[selectedOption] === 'extended' && dataExtended!==undefined) {
               data.text = dataExtended
             }
 
@@ -401,7 +401,7 @@ html
               text: ciphertext.value,
             }
 
-            if (algoritme[selectedOption] === 'extended') {
+            if (algoritme[selectedOption] === 'extended' && dataExtended!==undefined) {
               data.text = dataExtended
             }
 

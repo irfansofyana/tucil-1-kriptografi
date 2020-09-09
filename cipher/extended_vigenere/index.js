@@ -7,8 +7,7 @@ exports.encrypt = (plaintext, key) => {
   const output = [];
 
   const kt = textToIntList(key);
-  var pt = Object.values(plaintext);
-
+  var pt = (typeof(plaintext) === 'object' ? Object.values(plaintext) : textToIntList(plaintext));
   for (let i = 0; i < pt.length; i++) {
     const k = kt[i % kt.length] - 97;
     output.push(mod(pt[i] + k, 256)); // Add 65 to make it upper case
@@ -20,7 +19,7 @@ exports.encrypt = (plaintext, key) => {
 exports.decrypt = (cipher, key) => {
   const output = [];
 
-  var ct = Object.values(cipher);
+  var ct = (typeof(cipher) === 'object' ? Object.values(cipher) : textToIntList(cipher));
   const kt = textToIntList(key);
 
   for (let i = 0; i < ct.length; i++) {
