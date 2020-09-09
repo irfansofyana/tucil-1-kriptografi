@@ -33,7 +33,7 @@ Setelah semua library terinstall, kita dapat menjalankan aplikasi ini dengan car
 
 ## Fitur
 
-- Enkripsi / Dekripsi Pesan
+- Enkripsi / dekripsi pesan
 - Enkripsi berbagai jenis file
 - Unduh hasil enkripsi dan dekripsi sebagai file
 
