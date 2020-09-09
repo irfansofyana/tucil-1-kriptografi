@@ -138,7 +138,7 @@ html
         ciphertextGroup.style.display = "none";
 
         if (!fileValue) {
-          plainextGroup.style.display = "none";
+          plaintextGroup.style.display = "none";
           spasiCipherGroup.style.display = "none";
         } else {
           plaintextGroup.style.display = "block";
@@ -226,12 +226,14 @@ html
           affineKey1Group.style.display = "none";
           affineKey2Group.style.display = "none";
         } else if (algoritme[selectedOption] === "affine") {
+          fileMethodGroup.style.display = "none";
           affineKey1Group.style.display = "block";
           affineKey2Group.style.display = "block";
           keyPrimary.style.display = "none";
           affineKey1.value = "";
           affineKey2.value = "";
         } else {
+          fileMethodGroup.style.display = "none";
           affineKey1Group.style.display = "none";
           affineKey2Group.style.display = "none";
           keyPrimary.style.display = "block";
